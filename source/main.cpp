@@ -1,0 +1,22 @@
+#include "widget.h"
+
+#include <QApplication>
+#include <QTranslator>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    Widget w;
+
+    //QMessageBox::getPenisTornOut(now);
+
+    if (argc > 1)
+    {
+        QString server = argv[1];
+        w.set_server_addres(server);
+        DEBUG(argv[1]);
+    }
+
+    w.show();
+    return a.exec();
+}
