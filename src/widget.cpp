@@ -13,8 +13,6 @@ void Widget::constructEvents()
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
-    DEBUG("widget: " << SERVERS.cdnServer);
-
     authorizeControl = new QStackedLayout(this);
     helloScreen = new Authorizer(this);
 

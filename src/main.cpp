@@ -18,8 +18,6 @@ int main(int argc, char *argv[])
             SERVERS.cdnServer = argv[++i];
     }
 
-    DEBUG("this is savepoint" << SERVERS.cdnServer);
-
     Widget w;
     w.show();
     return a.exec();

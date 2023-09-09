@@ -1,6 +1,7 @@
 QT += core gui widgets svgwidgets network websockets
 
 CONFIG += c++23
+QMAKE_CXXFLAGS += -std=c++2b
 
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \
@@ -25,6 +26,7 @@ HEADERS += \
 	mainwidgets/undefinedpage.h \
 	stylesheets.h \
 	userinterface.h \
+	utils/concepts_templates.h \
 	utils/message.h \
 	utils/nonewlineqlineedit.h \
 	utils/properties.h \

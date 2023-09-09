@@ -20,7 +20,6 @@ void UserInterface::constructTabWidget()
 
 UserInterface::UserInterface(QWidget *parent) : QTabWidget{parent}
 {
-    DEBUG("UserInterface: " << SERVERS.cdnServer);
     constructWindowArray();
     constructTabWidget();
 

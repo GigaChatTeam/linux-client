@@ -135,8 +135,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
         return;
     }
 
-    QJsonObject respJson = QJsonDocument::fromJson(response->readAll()).object(); //БЛЯТЬ РАБОТАЙ ДОЛБАЁБ
-
+    QJsonObject respJson = QJsonDocument::fromJson(response->readAll()).object();
     success = respJson["status"].toString() == "Done";
     QJsonObject data = respJson["auth-data"].toObject();
 

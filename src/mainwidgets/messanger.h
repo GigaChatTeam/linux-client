@@ -5,6 +5,7 @@
 
 #include "utils/nonewlineqlineedit.h"
 #include "utils/message.h"
+#include "utils/concepts_templates.h"
 #include <QAbstractScrollArea>
 #include <QScrollArea>
 #include <QPushButton>
