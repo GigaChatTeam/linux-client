@@ -11,6 +11,9 @@
     #define DEBUG(str)
 #endif
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <QStringView>
 #include <QByteArray>
 #include <QString>
@@ -38,6 +41,7 @@
 #include <QUrl>
 
 #include "stylesheets.h"
+#include "utils/properties.h"
 
 class Authorizer : public QSvgWidget
 {
@@ -81,15 +85,11 @@ private:
     static const int resizeFactorH = 3,
                      resizeFactorV = 2;
 
-    QString server_address;
-
 protected:
     void resizeEvent(QResizeEvent* e) override;
 
 public:
-    explicit Authorizer(QString server, QWidget* parent = nullptr);
-
-    void set_server_address(const QString &newServer_address);
+    explicit Authorizer(QWidget* parent = nullptr);
 
 signals:
     void successfullyAuthorized(QByteArray response);

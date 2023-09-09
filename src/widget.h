@@ -30,16 +30,12 @@ private:
     QWidget* eventsAndUI;
     QHBoxLayout* eventsAndUILayout;
 
-    QString server_addres = "https://ru.gigachat.com";
-
     void setupUI();
     void setupConnections();
     void constructEvents();
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
-
-    void set_server_addres(const QString &newServer_addres);
 
 public slots:
     void onAuthentication(QByteArray data);

@@ -77,8 +77,8 @@ Authorizer::InputField::~InputField()
 }
 
 
-Authorizer::Authorizer(QString server, QWidget *parent)
-    : QSvgWidget{parent}, server_address{server}
+Authorizer::Authorizer(QWidget *parent)
+    : QSvgWidget{parent}
 {
     setMinimumSize(666, 420);
     load(BGImagePath);
@@ -103,13 +103,11 @@ void Authorizer::sendLoginRequest()
     }
 
     QString requestUrl =
-            QString("%1/auth?login=%2&password=%3%4")
-            .arg(server_address)
+            QString("/auth?username=%1&password=%2")
             .arg(field->username->text())
-            .arg(field->password->text())
-            .arg("");
+            .arg(field->password->text());
 
-    QNetworkRequest authRequest = QNetworkRequest(QUrl(requestUrl));
+    QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + requestUrl));
     mgr.get(authRequest);
 }
 void Authorizer::parseResponse(QNetworkReply* response)
@@ -127,19 +125,28 @@ void Authorizer::parseResponse(QNetworkReply* response)
                            "Error code: %1\n%2");
         failedAuth(error.arg(QString::number(response->error()))
                         .arg(response->errorString()));
-#ifndef QT_DEBUG
-        return;
+
+#ifdef QT_DEBUG
+        USER_PROPERTIES.accessToken = "test_token";
+        USER_PROPERTIES.userID = 'TEST';
+        if(field->username->text() == "test")
+            emit successfullyAuthorized(response->readAll());
 #endif
+        return;
     }
 
-    success = field->username->text() == "test" && field->password->text() == "1234"; //TODO: IMPLEMENT CHECK
+    QJsonObject respJson = QJsonDocument::fromJson(response->readAll()).object(); //БЛЯТЬ РАБОТАЙ ДОЛБАЁБ
 
-    if (success) emit successfullyAuthorized(response->readAll());
-    else {
-#ifndef QT_DEBUG
-        failedAuth(tr("Login incorrect"))
-#endif
-        ;}
+    success = respJson["status"].toString() == "Done";
+    QJsonObject data = respJson["auth-data"].toObject();
+
+    if (success)
+    {
+        USER_PROPERTIES.accessToken = data["token"].toString().toLatin1();
+        USER_PROPERTIES.userID = data["id"].toInteger();
+        emit successfullyAuthorized(response->readAll());
+    }
+    else failedAuth(data["reason"].toString());
 }
 void Authorizer::failedAuth(QString context)
 {
@@ -158,11 +165,6 @@ void Authorizer::failedAuth(QString context)
 textset:
     field->errorMsg->setText(context);
     field->username->setFocus();
-}
-
-void Authorizer::set_server_address(const QString &newServer_address)
-{
-    server_address = newServer_address;
 }
 void Authorizer::resizeEvent(QResizeEvent *e)
 {

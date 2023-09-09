@@ -1,8 +1,10 @@
-#pragma  once
+#pragma once
 
 #include <QObject>
+#include "utils/properties.h"
 
 #include "utils/nonewlineqlineedit.h"
+#include "utils/message.h"
 #include <QAbstractScrollArea>
 #include <QScrollArea>
 #include <QPushButton>
@@ -42,7 +44,6 @@ class ScrollingWidget : public QWidget
     QWidget* shownMessages;
     QVBoxLayout* shownMessagesLayout;
 
-
 public:
     void setupUI();
     void setupLayout();
@@ -54,7 +55,7 @@ public:
 public slots:
     void errorOccured();
     void receiveMessage(QString message);
-    void addMessage(const QString& text, const QString& sender);
-    void sendMessage();
+    void addMessage(const QString& text, const QString& sender, GC::MsgAlign align);
+    void sendTextMessage();
 };
 

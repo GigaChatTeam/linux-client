@@ -8,23 +8,15 @@ void Widget::setupConnections()
 }
 //TODO: IMPLEMENT
 void Widget::constructEvents()
-{
-#ifdef QT_DEBUG
-
-#endif
-}
-
-void Widget::set_server_addres(const QString &newServer_addres)
-{
-    server_addres = newServer_addres;
-    helloScreen->set_server_address(newServer_addres);
-}
+{}
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
+    DEBUG("widget: " << SERVERS.cdnServer);
+
     authorizeControl = new QStackedLayout(this);
-    helloScreen = new Authorizer(server_addres, this);
+    helloScreen = new Authorizer(this);
 
     eventsAndUI = new QWidget();
     eventsAndUILayout = new QHBoxLayout(eventsAndUI);

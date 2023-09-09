@@ -10,15 +10,25 @@ Message::Message(const QString &_sender,
 {
     layout = new QHBoxLayout(this);
     layout->setAlignment(alignment == sent ? Qt::AlignLeft : Qt::AlignRight);
-    sender = QLabel(_sender);
-    message = QLabel(_message);
-    message.setWordWrap(false);
-    sender_message = QVBoxLayout();
-    sender_message.addWidget(&sender, 1);
-    sender_message.addWidget(&message, 2);
-    layout.addSpacing(1);
-    layout.addLayout(&sender_message, 4)
+    sender = new QLabel(_sender);
+    message = new QLabel(_message);
+    message->setWordWrap(false);
+    sender_message = new QVBoxLayout();
+    sender_message->addWidget(sender, 1);
+    sender_message->addWidget(message, 2);
+    if (alignment == sent)
+    {
+        layout->addSpacing(1);
+        layout->addLayout(sender_message, 4);
+    }
+    else
+    {
+        layout->addLayout(sender_message, 4);
+        layout->addSpacing(1);
+    }
 
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+    setStyleSheet("border: 2px red;");
 }
 
 } // namespace GC

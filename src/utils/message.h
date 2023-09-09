@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QIcon>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "stylesheets.h"
 
@@ -18,10 +19,10 @@ class Message : public QWidget
 {
     Q_OBJECT
 
-    QLabel sender, message;
+    QLabel *sender, *message;
     QHBoxLayout *layout;
-    QVBoxLayout sender_message;
-    QIcon senderPFP;
+    QVBoxLayout *sender_message;
+    QIcon *senderPFP;
 
     MsgAlign alignment;
 

@@ -5,10 +5,10 @@ void ScrollingWidget::setupUI()
     shownMessages = new QWidget();
     shownMessagesLayout = new QVBoxLayout(shownMessages);
     shownMessagesLayout->setAlignment(Qt::AlignTop);
-#ifdef QT_DEBUG
+/*#ifdef QT_DEBUG
     for(int i = 0; i < 20; ++i)
         shownMessagesLayout->addWidget(new QPushButton("lol"));
-#endif
+#endif*/
     messageHolder = new QScrollArea();
     messageHolder->setWidget(shownMessages);
     messageHolder->setWidgetResizable(true);
@@ -32,8 +32,8 @@ void ScrollingWidget::setupConnections()
 {
     connect(serverConnection, SIGNAL(textMessageReceived(QString)), this, SLOT(receiveMessage(QString)));
     connect(serverConnection, SIGNAL(disconnected()), this, SLOT(errorOccured()));
-    connect(inputLine, SIGNAL(enterPressed()), this, SLOT(sendMessage()));
-    connect(sendButton, SIGNAL(pressed()), this, SLOT(sendMessage()));
+    connect(inputLine, SIGNAL(enterPressed()), this, SLOT(sendTextMessage()));
+    connect(sendButton, SIGNAL(pressed()), this, SLOT(sendTextMessage()));
 }
 
 ScrollingWidget::ScrollingWidget()
@@ -44,7 +44,9 @@ ScrollingWidget::ScrollingWidget()
     setupLayout();
     setupConnections();
 
-    serverConnection->open(QUrl("wss://socketsbay.com/wss/v2/1/demo/GigaChat"));
+    DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
+
+    serverConnection->open(QUrl(SERVERS.cdnServer + "/?"));
 }
 
 QString ScrollingWidget::serializeMessage(const QString &messageText)
@@ -55,7 +57,7 @@ QString ScrollingWidget::serializeMessage(const QString &messageText)
 QJsonObject ScrollingWidget::deserializeMessage(const QString &messageText)
 {
     QJsonObject ret;
-
+    ret["text"] = messageText;
     return ret;
 }
 
@@ -69,19 +71,32 @@ void ScrollingWidget::receiveMessage(QString message)
 {
     DEBUG(message);
     QJsonObject msgContents = deserializeMessage(message);
-    addMessage(message, "anon");
+    addMessage(msgContents["text"].toString(), "anon", GC::received);
 }
 
-void ScrollingWidget::addMessage(const QString& text, const QString& sender)
+void ScrollingWidget::addMessage(const QString& text, const QString& sender, GC::MsgAlign align)
 {
-    shownMessagesLayout->addWidget(new QLabel(sender +'\n' + text));
+    GC::Message* temp = new GC::Message(sender, text, align);
+    shownMessagesLayout->addWidget(temp);
+    QScrollBar* position = messageHolder->verticalScrollBar();
+    position->setSliderPosition(position->maximum());
+    DEBUG(temp);
 }
 
-void ScrollingWidget::sendMessage()
+void ScrollingWidget::sendTextMessage()
 {
     QString text = inputLine->text();
     inputLine->setText("");
-    serverConnection->sendTextMessage(text);
-    addMessage(text, tr("you"));
+
+    QJsonObject properties;
+    properties["type"] = "MESSAGE-POST";
+    properties["channel"] = -1;
+    properties["user"] = -2;
+    properties["text"] = text;
+
+    QJsonDocument serializer(properties);
+
+    serverConnection->sendTextMessage(serializer.toJson(QJsonDocument::Compact));
+    addMessage(text, tr("you"), GC::sent);
 }
 

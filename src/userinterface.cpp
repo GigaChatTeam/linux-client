@@ -2,7 +2,7 @@
 
 void UserInterface::constructWindowArray()
 {
-    tabs = 
+    tabs =
     {
         std::make_tuple( QIcon(":resources/icon1.png"), "Tab with scrolling windows", new ScrollingWidget()     ),
         std::make_tuple( QIcon(":resources/icon2.png"), "Tab that is actually twitch", new GridScrollingWidget()),
@@ -15,12 +15,13 @@ void UserInterface::constructTabWidget()
         addTab(Widget, Icon, Title);
     setTabPosition(TabPosition::South);
     setElideMode(Qt::ElideMiddle);
-    
+
 }
 
 UserInterface::UserInterface(QWidget *parent) : QTabWidget{parent}
 {
+    DEBUG("UserInterface: " << SERVERS.cdnServer);
     constructWindowArray();
     constructTabWidget();
-    
+
 }

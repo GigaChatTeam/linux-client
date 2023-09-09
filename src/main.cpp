@@ -1,22 +1,26 @@
 #include "widget.h"
+#include "utils/properties.h"
 
 #include <QApplication>
 #include <QTranslator>
 
+#include <cstring>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Widget w;
 
-    //QMessageBox::getPenisTornOut(now);
-
-    if (argc > 1)
+    for(int i = 0; i < argc; ++i)
     {
-        QString server = argv[1];
-        w.set_server_addres(server);
-        DEBUG(argv[1]);
+        if (!std::strcmp(argv[i], "-l"))
+            SERVERS.loginServer = argv[++i];
+        if (!std::strcmp(argv[i], "-w"))
+            SERVERS.cdnServer = argv[++i];
     }
 
+    DEBUG("this is savepoint" << SERVERS.cdnServer);
+
+    Widget w;
     w.show();
     return a.exec();
 }
