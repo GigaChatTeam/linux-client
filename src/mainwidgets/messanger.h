@@ -37,7 +37,7 @@ class ScrollingWidget : public QWidget
 
     QWebSocket* serverConnection;
 
-    QScrollArea* messageHolder;
+    QScrollArea* shownMessagesScroller;
     NoNewLineQLineEdit* inputLine;
     QPushButton* sendButton;
 
@@ -53,9 +53,9 @@ public:
     static QJsonObject deserializeMessage(const QString& messageText);
 
 public slots:
-    void errorOccured();
-    void receiveMessage(QString message);
     void addMessage(const QString& text, const QString& sender, GC::MsgAlign align);
+    void errorOccured();
+    void receiveTextMessage(QString message);
     void sendTextMessage();
 };
 

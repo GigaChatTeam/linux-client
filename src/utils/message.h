@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QIcon>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -15,7 +16,7 @@ enum MsgAlign
     sent, received
 };
 
-class Message : public QWidget
+class Message : public QFrame
 {
     Q_OBJECT
 

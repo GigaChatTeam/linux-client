@@ -6,10 +6,10 @@ Message::Message(const QString &_sender,
                  const QString &_message,
                  MsgAlign status,
                  QWidget *parent)
-    : QWidget(parent), alignment{status}
+    : QFrame(parent), alignment{status}
 {
     layout = new QHBoxLayout(this);
-    layout->setAlignment(alignment == sent ? Qt::AlignLeft : Qt::AlignRight);
+    //layout->setAlignment(alignment == sent ? Qt::AlignLeft : Qt::AlignRight);
     sender = new QLabel(_sender);
     message = new QLabel(_message);
     message->setWordWrap(false);
@@ -27,8 +27,8 @@ Message::Message(const QString &_sender,
         layout->addSpacing(1);
     }
 
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-    setStyleSheet("border: 2px red;");
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    setLineWidth(2);
 }
 
 } // namespace GC

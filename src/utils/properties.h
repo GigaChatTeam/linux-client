@@ -6,15 +6,18 @@
 #include <QByteArray>
 #include <QUrl>
 
-struct {
+typedef struct {
     QByteArray accessToken;
     int64_t userID;
     std::vector<int64_t> activeChannels,
                          passiveChannels;
-} USER_PROPERTIES;
+} USER_PROPERTIES_T;
 
-struct {
+typedef struct {
     QString loginServer,
             cdnServer;
-} SERVERS {"https://ru.gigacht.com", "wss://ru.gigacht.com"};
+} SERVERS_T;
+
+extern USER_PROPERTIES_T USER_PROPERTIES;
+extern SERVERS_T SERVERS;
 
