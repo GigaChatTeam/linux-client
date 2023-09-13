@@ -30,8 +30,15 @@ const QString CheckboxSS =
     "alignment: center";
 
 const QString MessageSS =
-    "border: 3px solid black;"
-    "border-radius: 10px";
+    "color: yellow;"
+    "border: 3px solid yellow;"
+    "border-radius: 10px;"
+    "background-color: black;";
+
+const QString MessageErrorSS =
+    "color: #505050;"
+    "border: 3px solid gray;"
+    "font: bold;";
 
 }
 

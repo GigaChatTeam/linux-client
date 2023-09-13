@@ -53,7 +53,7 @@ QString ScrollingWidget::serializeMessage(const QString &messageText)
     ret["text"] = messageText;
     ret["type"] = "MESSAGE-POST";
     ret["channel"] = -1;
-    ret["user"] = -2;
+    ret["author"] = USER_PROPERTIES.userID;
 
     return QJsonDocument(ret).toJson(QJsonDocument::Compact);
 }
@@ -68,8 +68,10 @@ void ScrollingWidget::addMessage(const QString& text, const QString& sender, GC:
     GC::Message* temp = new GC::Message(sender, text, align);
     shownMessagesLayout->addWidget(temp);
     QScrollBar* position = shownMessagesScroller->verticalScrollBar();
+
+    DEBUG(position->maximum() << position->value());
     position->setSliderPosition(position->maximum());
-    DEBUG(temp);
+    DEBUG(position->maximum() << position->value());
 }
 
 void ScrollingWidget::errorOccured()
@@ -81,7 +83,11 @@ void ScrollingWidget::receiveTextMessage(QString message)
 {
     DEBUG(message);
     QJsonObject msgContents = deserializeMessage(message);
-    addMessage(msgContents["text"].toString(), "anon", GC::received);
+    QString contents = getJsonSafe<QString>("text", msgContents)
+                .value_or("\e"),
+            author = getJsonSafe<QString>("author", msgContents)
+                .value_or("\e"); // \e stands for error
+    addMessage(contents, author, GC::received);
 }
 void ScrollingWidget::sendTextMessage()
 {

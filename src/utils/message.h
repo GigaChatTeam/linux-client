@@ -11,10 +11,7 @@
 
 namespace GC {
 
-enum MsgAlign
-{
-    sent, received
-};
+enum MsgAlign {sent, received};
 
 class Message : public QFrame
 {
@@ -28,12 +25,10 @@ class Message : public QFrame
     MsgAlign alignment;
 
 public:
-    explicit Message(const QString& _sender,
-                     const QString& _message,
-                     MsgAlign status,
+    explicit Message(QString _sender,
+                     QString _message,
+                     MsgAlign status = GC::received,
                      QWidget *parent = nullptr);
-
-signals:
 
 };
 

@@ -1,7 +1,7 @@
 QT += core gui widgets svgwidgets network websockets
 
 CONFIG += c++23
-QMAKE_CXXFLAGS += -std=c++2b
+QMAKE_CXXFLAGS += -std=c++2b -Wno-multichar
 
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \

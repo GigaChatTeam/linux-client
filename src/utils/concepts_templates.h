@@ -8,7 +8,7 @@
 #include <QJsonArray>
 
 
-template<typename T, typename...Ts>
+template <typename T, typename...Ts>
 concept is_one_of = (std::is_same<T, Ts>::value || ...);
 
 template <typename T>
@@ -24,7 +24,7 @@ concept json_type = is_one_of<
 >;
 
 template <json_type T>
-std::optional<T> get_json(QString key, QJsonObject o)
+std::optional<T> getJsonSafe(QString key, const QJsonObject& o)
 {
     if (!o.contains(key))
         return std::nullopt;
@@ -39,7 +39,7 @@ std::optional<T> get_json(QString key, QJsonObject o)
                 : std::nullopt;
     else if constexpr (std::is_same_v<T, QString>)
             return v.isString()
-                ? std::make_optional<T>(var.value<T>)
+                ? std::make_optional<T>(v.toString())
                 : std::nullopt;
     else if constexpr (std::is_same_v<T, QJsonArray>)
             return v.isArray()

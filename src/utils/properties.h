@@ -8,9 +8,9 @@
 
 typedef struct {
     QByteArray accessToken;
-    int64_t userID;
-    std::vector<int64_t> activeChannels,
-                         passiveChannels;
+    qint64 userID;
+    std::vector<qint64> activeChannels,
+                               passiveChannels;
 } USER_PROPERTIES_T;
 
 typedef struct {

@@ -24,6 +24,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include <optional>
+
 // TODO: REMOVE LATER
 #ifdef QT_DEBUG
     #include <iostream>
