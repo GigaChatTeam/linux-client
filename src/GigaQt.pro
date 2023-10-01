@@ -12,6 +12,7 @@ SOURCES += \
 	mainwidgets/gridscrollingwidget.cpp \
 	mainwidgets/messanger.cpp \
 	mainwidgets/undefinedpage.cpp \
+	stylesheets.cpp \
 	userinterface.cpp \
 	utils/message.cpp \
 	utils/nonewlineqlineedit.cpp \
