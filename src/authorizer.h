@@ -6,6 +6,7 @@
 #include <optional>
 #ifdef QT_DEBUG
     #include <iostream>
+    #include <QDebug>
     #define DEBUG(str) qDebug() << str
 #else
     #define DEBUG(str)
@@ -42,6 +43,8 @@
 
 #include "stylesheets.h"
 #include "utils/properties.h"
+#include "utils/concepts_templates.h"
+#include <functional>
 
 class Authorizer : public QSvgWidget
 {

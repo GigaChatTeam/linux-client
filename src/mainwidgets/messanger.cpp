@@ -30,6 +30,7 @@ void ScrollingWidget::setupConnections()
 {
     connect(serverConnection, SIGNAL(textMessageReceived(QString)), this, SLOT(receiveTextMessage(QString)));
     connect(serverConnection, SIGNAL(disconnected()), this, SLOT(errorOccured()));
+    connect(serverConnection, SIGNAL(aboutToClose()), this, SLOT(errorOccured())); // TODO: DELETE
     connect(inputLine, SIGNAL(enterPressed()), this, SLOT(sendTextMessage()));
     connect(sendButton, SIGNAL(pressed()), this, SLOT(sendTextMessage()));
 }
@@ -44,7 +45,9 @@ ScrollingWidget::ScrollingWidget()
 
     DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
 
-    serverConnection->open(QUrl(SERVERS.cdnServer + "/?"));
+    // TODO: OPEN CONNECTION AFTER AUTHORIZATION
+    serverConnection->open(QUrl(QString(SERVERS.cdnServer + "/?id=%1&token=%2")
+        .arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }
 
 QString ScrollingWidget::serializeMessage(const QString &messageText)
@@ -59,7 +62,7 @@ QString ScrollingWidget::serializeMessage(const QString &messageText)
 }
 QJsonObject ScrollingWidget::deserializeMessage(const QString &messageText)
 {
-    QJsonObject ret= QJsonDocument::fromJson(messageText.toUtf8()).object();
+    QJsonObject ret = QJsonDocument::fromJson(messageText.toUtf8()).object();
     return ret;
 }
 
@@ -77,7 +80,7 @@ void ScrollingWidget::addMessage(const QString& text, const QString& sender, GC:
 void ScrollingWidget::errorOccured()
 {
     DEBUG("ERROR OCCURED");
-
+    std::cout << "";
 }
 void ScrollingWidget::receiveTextMessage(QString message)
 {

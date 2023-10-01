@@ -80,8 +80,11 @@ Authorizer::InputField::~InputField()
 Authorizer::Authorizer(QWidget *parent)
     : QSvgWidget{parent}
 {
+    mgr.setTransferTimeout(5000); //5 seconds. may be changed later.
+
     setMinimumSize(666, 420);
     load(BGImagePath);
+
 
     field = new InputField(this);
     welcomeBack = new QLabel(tr("Welcome back!"), this);
@@ -102,10 +105,8 @@ void Authorizer::sendLoginRequest()
         return;
     }
 
-    QString requestUrl =
-            QString("/auth?username=%1&password=%2")
-            .arg(field->username->text())
-            .arg(field->password->text());
+    QString requestUrl = QString("/auth?username=%1&password=%2")
+                            .arg(field->username->text(), field->password->text());
 
     QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + requestUrl));
     mgr.get(authRequest);
@@ -114,8 +115,6 @@ void Authorizer::parseResponse(QNetworkReply* response)
 {
     DEBUG( "DATA RECIEVED:\n\e[1;33;40m" << response->readAll() << "\e[0m" );
 
-    bool success;
-
     if(response->error() != QNetworkReply::NoError)
     {
         DEBUG( "\e[1;33;40mNETWORK ERROR RECIEVED:"
@@ -123,8 +122,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
                  << "\e[0m" );
         QString error = tr("Login request failed:\n"
                            "Error code: %1\n%2");
-        failedAuth(error.arg(QString::number(response->error()))
-                        .arg(response->errorString()));
+        failedAuth(error.arg(QString::number(response->error()), response->errorString()));
 
 #ifdef QT_DEBUG
         USER_PROPERTIES.accessToken = "test_token";
@@ -132,20 +130,55 @@ void Authorizer::parseResponse(QNetworkReply* response)
         if(field->username->text() == "test")
             emit successfullyAuthorized(response->readAll());
 #endif
+#ifndef GIGAQT_AUTH_PARSE_TEST
         return;
+#endif
     }
 
     QJsonObject respJson = QJsonDocument::fromJson(response->readAll()).object();
-    success = respJson["status"].toString() == "Done";
-    QJsonObject data = respJson["auth-data"].toObject();
 
-    if (success)
+#ifdef GIGAQT_AUTH_PARSE_TEST
+    // TODO: fix response parsing when receiving from server
+    // it works with these tests, but not with actual server
+    QByteArray __success_ex__ =  "{\"status\": \"Done\", \"auth-data\": {\"id\": 4, \"token\":"
+                        " \"user.4.PoLr9jlqvIbECluNb01CqQTdP66F3wgq4yxMZRh3JKnQ19atI5E7Qut8ZsCCLUW4B\"}}",
+               __fail_ex__ = "{\"status\": \"Refused\", \"reason\": \"BadRequest\", \"description\": \"UserNotFound\"}";
+    respJson = QJsonDocument::fromJson(
+                   //__success_ex__
+                   __fail_ex__
+                   ).object();
+#endif
+
+    DEBUG("\e[1;93m" << response->readAll() << "\e[0m");
+    DEBUG(getJsonSafe<QJsonObject>("auth-data", respJson).has_value() << respJson["auth-data"].toObject());
+
+    // MONADSSS YESSS
+    getJsonSafe<QJsonObject>("auth-data", respJson)
+    .or_else([&respJson, this] -> std::optional<QJsonObject> { // shut up qtcreator, this is valid syntax in C++23
+        DEBUG("OR_ELSE TRIGGERED: " << __PRETTY_FUNCTION__);
+        failedAuth(QString("Error: ") + getJsonSafe<QString>("description", respJson)
+           .value_or("Unresolved JSON error"));
+        return std::nullopt;
+    })
+    .and_then([&response, this](QJsonObject data) -> std::optional<QJsonObject>{
+        DEBUG("AND_THEN TRIGGERED: " << __PRETTY_FUNCTION__);
+        USER_PROPERTIES.accessToken = getJsonSafe<QString>("token", data)
+            .transform([](QString maybe_value){
+                return maybe_value.toUtf8();
+            }).value_or(QByteArray());
+        USER_PROPERTIES.userID = getJsonSafe<qint64>("id", data).value_or(-1);
+        DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
+        emit successfullyAuthorized(response->readAll());
+        return std::nullopt;
+    });
+
+    /*if (success)
     {
-        USER_PROPERTIES.accessToken = data["token"].toString().toLatin1();
+        USER_PROPERTIES.accessToken = data["token"].toString().toUtf8();
         USER_PROPERTIES.userID = data["id"].toInteger();
         emit successfullyAuthorized(response->readAll());
     }
-    else failedAuth(data["reason"].toString());
+    else failedAuth(data["reason"].toString());*/
 }
 void Authorizer::failedAuth(QString context)
 {

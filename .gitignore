@@ -5,3 +5,4 @@ source/compile
 *.user*
 *.docx
 *.bak
+accounts*
