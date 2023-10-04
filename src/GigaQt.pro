@@ -5,7 +5,7 @@ QMAKE_CXXFLAGS += -std=c++2b -Wno-multichar
 
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \
-        GIGAQT_AUTH_PARSE_TEST
+#        GIGAQT_AUTH_PARSE_TEST
 
 SOURCES += \
 	authorizer.cpp \

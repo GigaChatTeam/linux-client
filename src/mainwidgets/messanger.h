@@ -38,7 +38,6 @@ class ScrollingWidget : public QWidget
 {
     Q_OBJECT
 
-    QWebSocket* serverConnection;
 
     QScrollArea* shownMessagesScroller;
     NoNewLineQLineEdit* inputLine;
@@ -48,6 +47,7 @@ class ScrollingWidget : public QWidget
     QVBoxLayout* shownMessagesLayout;
 
 public:
+    QWebSocket* serverConnection;
     void setupUI();
     void setupLayout();
     void setupConnections();

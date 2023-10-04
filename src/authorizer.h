@@ -95,7 +95,7 @@ public:
     explicit Authorizer(QWidget* parent = nullptr);
 
 signals:
-    void successfullyAuthorized(QByteArray response);
+    void successfullyAuthorized();
 
 public slots:
     void parseResponse(QNetworkReply* response);

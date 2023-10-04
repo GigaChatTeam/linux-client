@@ -32,11 +32,14 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {}
 
-//TODO: IMPLEMENT
-void Widget::onAuthentication(QByteArray data)
+void Widget::onAuthentication()
 {
     authorizeControl->setCurrentIndex(1);
-    DEBUG(data);
+#ifdef QT_DEBUG //to verify server token rejection
+    USER_PROPERTIES.accessToken = "ИDИ_НАХУЙ_ПИДОРАС_DEEZ_NUTZ_SUCK_ON_DEEZ_BALLS";
+#endif
+    qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection->open(QUrl(SERVERS.cdnServer
+        + QString("/id=%0&token=%1").arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }
 
 void Widget::addRecentEvents(QList<RecentEvent *> REList)

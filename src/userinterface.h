@@ -20,12 +20,13 @@
 class UserInterface : public QTabWidget
 {
     Q_OBJECT
-    
-    typedef std::tuple<QIcon, QString, QWidget*> window_type;
-    
-    std::array< window_type, 3 > tabs;
 
 public:
+
+    typedef std::tuple<QIcon, QString, QWidget*> window_type;
+
+    std::array< window_type, 3 > tabs;
+
     void constructWindowArray();
     void constructTabWidget();
     UserInterface(QWidget* parent = nullptr);

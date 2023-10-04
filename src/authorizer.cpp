@@ -105,7 +105,13 @@ void Authorizer::sendLoginRequest()
         return;
     }
 
-    QString requestUrl = QString("/auth?username=%1&password=%2")
+    QString requestUrl = QString("/"
+#ifndef GIGAQT_AUTH_PARSE_TEST
+                                 "auth"
+#else
+                                 "debug"
+#endif
+                                 "?username=%1&password=%2")
                             .arg(field->username->text(), field->password->text());
 
     QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + requestUrl));
@@ -113,7 +119,8 @@ void Authorizer::sendLoginRequest()
 }
 void Authorizer::parseResponse(QNetworkReply* response)
 {
-    DEBUG( "DATA RECIEVED:\n\e[1;33;40m" << response->readAll() << "\e[0m" );
+    QByteArray jsonEscapeString = response->readAll();
+    DEBUG( "DATA RECIEVED:\n\e[1;33;40m" << jsonEscapeString << "\e[0m" );
 
     if(response->error() != QNetworkReply::NoError)
     {
@@ -128,28 +135,31 @@ void Authorizer::parseResponse(QNetworkReply* response)
         USER_PROPERTIES.accessToken = "test_token";
         USER_PROPERTIES.userID = 'TEST';
         if(field->username->text() == "test")
-            emit successfullyAuthorized(response->readAll());
+            emit successfullyAuthorized();
 #endif
 #ifndef GIGAQT_AUTH_PARSE_TEST
         return;
 #endif
     }
 
-    QJsonObject respJson = QJsonDocument::fromJson(response->readAll()).object();
+    jsonEscapeString.replace("\\", 1, "", 0); // I cant't fucking believe that this line of code costed me 7 fukcing horts
+    QJsonObject respJson = QJsonDocument::fromJson(jsonEscapeString).object();
 
+
+    //not cutting out of the source just to remember all the suffering
 #ifdef GIGAQT_AUTH_PARSE_TEST
     // TODO: fix response parsing when receiving from server
     // it works with these tests, but not with actual server
-    QByteArray __success_ex__ =  "{\"status\": \"Done\", \"auth-data\": {\"id\": 4, \"token\":"
-                        " \"user.4.PoLr9jlqvIbECluNb01CqQTdP66F3wgq4yxMZRh3JKnQ19atI5E7Qut8ZsCCLUW4B\"}}",
+    QByteArray __success_ex__ = "{\"auth-data\":{\"AAAA\": true}}",
                __fail_ex__ = "{\"status\": \"Refused\", \"reason\": \"BadRequest\", \"description\": \"UserNotFound\"}";
     respJson = QJsonDocument::fromJson(
-                   //__success_ex__
-                   __fail_ex__
+                   __success_ex__
+                   //__fail_ex__
                    ).object();
 #endif
 
-    DEBUG("\e[1;93m" << response->readAll() << "\e[0m");
+
+    DEBUG("\e[1;93m" << jsonEscapeString << "\e[0m");
     DEBUG(getJsonSafe<QJsonObject>("auth-data", respJson).has_value() << respJson["auth-data"].toObject());
 
     // MONADSSS YESSS
@@ -168,17 +178,9 @@ void Authorizer::parseResponse(QNetworkReply* response)
             }).value_or(QByteArray());
         USER_PROPERTIES.userID = getJsonSafe<qint64>("id", data).value_or(-1);
         DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
-        emit successfullyAuthorized(response->readAll());
+        emit successfullyAuthorized();
         return std::nullopt;
     });
-
-    /*if (success)
-    {
-        USER_PROPERTIES.accessToken = data["token"].toString().toUtf8();
-        USER_PROPERTIES.userID = data["id"].toInteger();
-        emit successfullyAuthorized(response->readAll());
-    }
-    else failedAuth(data["reason"].toString());*/
 }
 void Authorizer::failedAuth(QString context)
 {

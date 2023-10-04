@@ -38,7 +38,7 @@ public:
     ~Widget();
 
 public slots:
-    void onAuthentication(QByteArray data);
+    void onAuthentication();
     void addRecentEvents(QList<RecentEvent*> REList);
 
 };

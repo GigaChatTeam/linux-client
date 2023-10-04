@@ -44,10 +44,6 @@ ScrollingWidget::ScrollingWidget()
     setupConnections();
 
     DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
-
-    // TODO: OPEN CONNECTION AFTER AUTHORIZATION
-    serverConnection->open(QUrl(QString(SERVERS.cdnServer + "/?id=%1&token=%2")
-        .arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }
 
 QString ScrollingWidget::serializeMessage(const QString &messageText)
@@ -80,7 +76,7 @@ void ScrollingWidget::addMessage(const QString& text, const QString& sender, GC:
 void ScrollingWidget::errorOccured()
 {
     DEBUG("ERROR OCCURED");
-    std::cout << "";
+    qInfo() << "\e[36;41m ERRORS YOU MOTHERFUCKER\e[0m";
 }
 void ScrollingWidget::receiveTextMessage(QString message)
 {
