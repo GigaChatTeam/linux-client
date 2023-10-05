@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/auth_data">
+        <file>id_token</file>
+    </qresource>
+</RCC>

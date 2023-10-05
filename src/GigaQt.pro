@@ -43,4 +43,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 TRANSLATIONS += \
 	en_GB.qm
 
-RESOURCES = assets/assets.qrc
+RESOURCES += \
+    assets/assets.qrc \
+    data/data.qrc

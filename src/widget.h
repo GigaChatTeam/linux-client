@@ -1,6 +1,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include <fstream>
+
 #include "authorizer.h"
 #include "userinterface.h"
 #include "utils/recentevent.h"
@@ -15,12 +17,14 @@
 #include <QListWidgetItem>
 #include <QHBoxLayout>
 
+#include <QString>
+#include <QWebSocket>
+
 class Widget : public QWidget
 {
     Q_OBJECT
 
 private:
-    QStackedLayout* authorizeControl;
     Authorizer* helloScreen;
     UserInterface* UI;
 
@@ -30,10 +34,15 @@ private:
     QWidget* eventsAndUI;
     QHBoxLayout* eventsAndUILayout;
 
+    bool tokenIsPresent();
+
     void setupUI();
     void setupConnections();
-    void constructEvents();
+    void constructUI();
 public:
+
+    QWebSocket* serverConnection_p;
+
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
