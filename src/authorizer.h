@@ -54,7 +54,7 @@ private:
 
     struct InputField
     {
-        QWidget* parent;
+        QWidget* parent ;
 
         void setupUI();
         void setupLayout();

@@ -23,9 +23,6 @@ Widget::Widget(QWidget *parent)
     eventsAndUILayout->addWidget(recentEvents, 1);
     eventsAndUILayout->addWidget(UI, 9);
 
-    //can not put this before UI is initialized
-    serverConnection_p = qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection;
-
     authorizeControl->addWidget(helloScreen);
     authorizeControl->addWidget(eventsAndUI);
 
@@ -41,9 +38,8 @@ void Widget::onAuthentication()
 #ifdef QT_DEBUG //to verify server token rejection
     USER_PROPERTIES.accessToken = "ИDИ_НАХУЙ_ПИДОРАС_DEEZ_NUTZ_SUCK_ON_DEEZ_BALLS";
 #endif
-    serverConnection_p->open(QUrl(
-        SERVERS.cdnServer + QString("/id=%0&token=%1").arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)
-        ));
+    qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection->open(QUrl(SERVERS.cdnServer
+        + QString("/id=%0&token=%1").arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }
 
 void Widget::addRecentEvents(QList<RecentEvent *> REList)

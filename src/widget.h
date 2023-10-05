@@ -15,8 +15,6 @@
 #include <QListWidgetItem>
 #include <QHBoxLayout>
 
-#include <QWebSocket>
-
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -36,9 +34,6 @@ private:
     void setupConnections();
     void constructEvents();
 public:
-
-    QWebSocket* serverConnection_p;
-
     Widget(QWidget *parent = nullptr);
     ~Widget();
 

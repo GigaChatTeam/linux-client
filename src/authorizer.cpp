@@ -162,7 +162,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
     DEBUG("\e[1;93m" << jsonEscapeString << "\e[0m");
     DEBUG(getJsonSafe<QJsonObject>("auth-data", respJson).has_value() << respJson["auth-data"].toObject());
 
-    // Unreadable functional code, hell yeah
+    // MONADSSS YESSS
     getJsonSafe<QJsonObject>("auth-data", respJson)
     .or_else([&respJson, this] -> std::optional<QJsonObject> { // shut up qtcreator, this is valid syntax in C++23
         DEBUG("OR_ELSE TRIGGERED: " << __PRETTY_FUNCTION__);
