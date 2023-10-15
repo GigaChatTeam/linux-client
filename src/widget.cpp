@@ -13,7 +13,45 @@ bool Widget::tokenIsPresent()
     *       and so does third
     */
 
-    std::fstream auth_data(":/auth_data/id_token", std::ios::in);
+    QFile auth_data("");
+    if(!auth_data.exists())
+    {
+        DEBUG("AUTH DATA DOES NOT EXIST");
+        auth_data.open(QFile::NewOnly | QFile::WriteOnly | QFile::Text);
+        QTextStream out(&auth_data);
+        out << "0" << Qt::endl;
+        auth_data.close();
+        auth_data.open(QFile::ReadOnly | QFile::Text);
+        DEBUG("AUTH DATA STATUS: " << auth_data.isOpen());
+    }
+
+    if(!auth_data.isOpen())
+    {
+        DEBUG("AUTH DATA COULD NOT BE OPENED");
+        return false;
+    }
+
+    QTextStream in(&auth_data);
+    QString has_data, id, token;
+    in >> has_data;
+
+    if(has_data != "1")
+        return false;
+
+    in.skipWhiteSpace();
+    id = in.readLine();
+    token = in.readLine();
+
+    if (id.isNull() || token.isNull())
+        return false;
+
+    USER_PROPERTIES.userID = id.toLongLong();
+    USER_PROPERTIES.accessToken = token.toUtf8().data();
+    return true;
+
+
+/*
+    std::fstream auth_data(":/id_and_token", std::ios::in);
     if (!auth_data.is_open())
     {
         DEBUG("AUTH DATA COULD NOT BE OPEN");
@@ -34,6 +72,7 @@ bool Widget::tokenIsPresent()
     USER_PROPERTIES.userID = std::stoll(id);
     USER_PROPERTIES.accessToken = token.data();
     return true;
+*/
 }
 void Widget::setupConnections()
 {

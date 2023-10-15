@@ -3,9 +3,23 @@ QT += core gui widgets svgwidgets network websockets
 CONFIG += c++23
 QMAKE_CXXFLAGS += -std=c++2b -Wno-multichar
 
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
+#!isEmpty(target.path): INSTALLS += target
+
+qnx: INSTALL_ROOT = /tmp/$${TARGET}/bin
+else: unix:!android: INSTALL_ROOT = /opt/$${TARGET}/bin
+
+!isEmpty(INSTALL_DIR): INSTALL_ROOT = $$INSTALL_DIR
+BIN_DIR = $$INSTALL_ROOT/bin
+SHARE_DIR = $$INSTALL_ROOT/share/$${TARGET}
+
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \
-#        GIGAQT_AUTH_PARSE_TEST
+#       GIGAQT_AUTH_PARSE_TEST \
+	ROOT_DIRECTORY="\\\"$${INSTALL_ROOT}\\\"" \
+	BIN_DIRICTORY="\\\"$${BIN_DIR}\\\"" \
+	SHARE_DIRECTORY="\\\"$${SHARE_DIR}\\\""
 
 SOURCES += \
 	authorizer.cpp \
@@ -35,9 +49,8 @@ HEADERS += \
 	utils/recentevent.h \
 	widget.h
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+target.path = $$BIN_DIR
+
 !isEmpty(target.path): INSTALLS += target
 
 TRANSLATIONS += \
@@ -45,4 +58,4 @@ TRANSLATIONS += \
 
 RESOURCES += \
     assets/assets.qrc \
-    data/data.qrc
+#   data/data.qrc

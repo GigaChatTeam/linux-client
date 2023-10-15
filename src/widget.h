@@ -17,6 +17,7 @@
 #include <QListWidgetItem>
 #include <QHBoxLayout>
 
+#include <QFile>
 #include <QString>
 #include <QWebSocket>
 

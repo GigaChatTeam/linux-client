@@ -10,6 +10,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+#ifdef QT_DEBUG
+    qInfo() <<  ROOT_DIRECTORY << SHARE_DIRECTORY << BIN_DIRICTORY;
+#endif
+
     for(int i = 0; i < argc; ++i)
     {
         if (!std::strcmp(argv[i], "-l"))
