@@ -7,8 +7,8 @@ QMAKE_CXXFLAGS += -std=c++2b -Wno-multichar
 #else: unix:!android: target.path = /opt/$${TARGET}/bin
 #!isEmpty(target.path): INSTALLS += target
 
-qnx: INSTALL_ROOT = /tmp/$${TARGET}/bin
-else: unix:!android: INSTALL_ROOT = /opt/$${TARGET}/bin
+qnx: INSTALL_ROOT = /tmp/$${TARGET}
+else: unix:!android: INSTALL_ROOT = /opt/$${TARGET}
 
 !isEmpty(INSTALL_DIR): INSTALL_ROOT = $$INSTALL_DIR
 BIN_DIR = $$INSTALL_ROOT/bin
@@ -30,6 +30,7 @@ SOURCES += \
 	stylesheets.cpp \
 	userinterface.cpp \
 	utils/message.cpp \
+	utils/misc_functions.cpp \
 	utils/nonewlineqlineedit.cpp \
 	utils/properties.cpp \
 	utils/recentevent.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
 	userinterface.h \
 	utils/concepts_templates.h \
 	utils/message.h \
+	utils/misc_functions.h \
 	utils/nonewlineqlineedit.h \
 	utils/properties.h \
 	utils/recentevent.h \

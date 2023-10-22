@@ -18,6 +18,12 @@ typedef struct {
             cdnServer;
 } SERVERS_T;
 
+typedef struct {
+    QString home, // will need if someone tries to build this for linux
+            var,
+            db;
+} FILEPATHS_T;
+
 extern USER_PROPERTIES_T USER_PROPERTIES;
 extern SERVERS_T SERVERS;
-
+extern FILEPATHS_T FILEPATHS;

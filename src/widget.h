@@ -16,6 +16,7 @@
 #include <QStackedLayout>
 #include <QListWidgetItem>
 #include <QHBoxLayout>
+#include <QBoxLayout>
 
 #include <QFile>
 #include <QString>
@@ -34,6 +35,8 @@ private:
 
     QWidget* eventsAndUI;
     QHBoxLayout* eventsAndUILayout;
+
+    QBoxLayout* please_resize_authorizer;
 
     bool tokenIsPresent();
 

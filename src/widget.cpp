@@ -13,7 +13,7 @@ bool Widget::tokenIsPresent()
     *       and so does third
     */
 
-    QFile auth_data("");
+    QFile auth_data(SHARE_DIRECTORY "/token");
     if(!auth_data.exists())
     {
         DEBUG("AUTH DATA DOES NOT EXIST");
@@ -48,31 +48,6 @@ bool Widget::tokenIsPresent()
     USER_PROPERTIES.userID = id.toLongLong();
     USER_PROPERTIES.accessToken = token.toUtf8().data();
     return true;
-
-
-/*
-    std::fstream auth_data(":/id_and_token", std::ios::in);
-    if (!auth_data.is_open())
-    {
-        DEBUG("AUTH DATA COULD NOT BE OPEN");
-        auth_data.open(":/auth_data/id_token", std::ios::out);
-        auth_data << "0" << std::endl;
-        auth_data.close();
-        auth_data.open(":/auth_data/id_token", std::ios::in);
-        DEBUG("AUTH DATA STATUS: " << auth_data.is_open());
-    }
-    std::string has_data = "", id, token;
-    //auth_data >> has_data should have side-effects
-    //if it is evaluated to false, the has_data check should not be performed
-    //therefore the following code should be valid
-    if (!(auth_data >> has_data) || has_data != "1")
-        return false;
-    if (!std::getline(auth_data, id) || !std::getline(auth_data, token))
-        return false;
-    USER_PROPERTIES.userID = std::stoll(id);
-    USER_PROPERTIES.accessToken = token.data();
-    return true;
-*/
 }
 void Widget::setupConnections()
 {
@@ -100,7 +75,12 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
     if (!tokenIsPresent())
+    {
         helloScreen = new Authorizer(this);
+        please_resize_authorizer = new QBoxLayout(QBoxLayout::TopToBottom, this);
+        please_resize_authorizer->setContentsMargins(0, 0, 0, 0);
+        please_resize_authorizer->addWidget(helloScreen);
+    }
     else constructUI();
 
 }
@@ -110,13 +90,14 @@ Widget::~Widget()
 
 void Widget::onAuthentication()
 {
-    delete helloScreen;
+    delete please_resize_authorizer;
+    // delete helloScreen; //layout should manage that
     constructUI();
 
 #ifdef QT_DEBUG //to verify server token rejection
     USER_PROPERTIES.accessToken = "ИDИ_НАХУЙ_ПИДОРАС_DEEZ_NUTZ_SUCK_ON_DEEZ_BALLS";
 #endif
-    qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection->open(QUrl(SERVERS.cdnServer
+    serverConnection_p->open(QUrl(SERVERS.cdnServer
         + QString("/id=%0&token=%1").arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }
 
