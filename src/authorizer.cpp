@@ -206,3 +206,4 @@ void Authorizer::resizeEvent(QResizeEvent *e)
     QSvgWidget::resizeEvent(e);
     field->reposition(geometry());
 }
+

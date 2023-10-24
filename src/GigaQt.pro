@@ -12,7 +12,8 @@ else: unix:!android: INSTALL_ROOT = /opt/$${TARGET}
 
 !isEmpty(INSTALL_DIR): INSTALL_ROOT = $$INSTALL_DIR
 BIN_DIR = $$INSTALL_ROOT/bin
-SHARE_DIR = $$INSTALL_ROOT/share/$${TARGET}
+release: SHARE_DIR = $$INSTALL_ROOT/share/$${TARGET}
+debug: SHARE_DIR = "/home/main/coding/linux-client/build/Debug/share/$${TARGET}"
 
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \

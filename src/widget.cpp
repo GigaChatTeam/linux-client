@@ -1,6 +1,5 @@
 #include "widget.h"
 
-//TODO: DEBUG & TEST
 bool Widget::tokenIsPresent()
 {
     /*      auth_data File structure:
@@ -16,20 +15,16 @@ bool Widget::tokenIsPresent()
     QFile auth_data(SHARE_DIRECTORY "/token");
     if(!auth_data.exists())
     {
-        DEBUG("AUTH DATA DOES NOT EXIST");
         auth_data.open(QFile::NewOnly | QFile::WriteOnly | QFile::Text);
         QTextStream out(&auth_data);
         out << "0" << Qt::endl;
         auth_data.close();
-        auth_data.open(QFile::ReadOnly | QFile::Text);
-        DEBUG("AUTH DATA STATUS: " << auth_data.isOpen());
     }
 
+    auth_data.open(QFile::ReadOnly | QFile::Text);
+
     if(!auth_data.isOpen())
-    {
-        DEBUG("AUTH DATA COULD NOT BE OPENED");
         return false;
-    }
 
     QTextStream in(&auth_data);
     QString has_data, id, token;
@@ -45,17 +40,21 @@ bool Widget::tokenIsPresent()
     if (id.isNull() || token.isNull())
         return false;
 
-    USER_PROPERTIES.userID = id.toLongLong();
+    bool ID_valid;
+    USER_PROPERTIES.userID = id.toLongLong(&ID_valid);
     USER_PROPERTIES.accessToken = token.toUtf8().data();
-    return true;
+    return ID_valid;
 }
 void Widget::setupConnections()
 {
-    connect(helloScreen, &Authorizer::successfullyAuthorized,
-            this, &Widget::onAuthentication,
-            Qt::DirectConnection);
+    if (helloScreen != nullptr)
+    {
+        connect(helloScreen, &Authorizer::successfullyAuthorized,
+                this, &Widget::onAuthentication,
+                Qt::DirectConnection);
+    }
 }
-//TODO: IMPLEMENT
+
 void Widget::constructUI()
 {
     eventsAndUI = new QWidget();
@@ -91,12 +90,12 @@ Widget::~Widget()
 void Widget::onAuthentication()
 {
     delete please_resize_authorizer;
-    // delete helloScreen; //layout should manage that
+    please_resize_authorizer = nullptr;
+    delete helloScreen;
+    helloScreen = nullptr;
+
     constructUI();
 
-#ifdef QT_DEBUG //to verify server token rejection
-    USER_PROPERTIES.accessToken = "ИDИ_НАХУЙ_ПИДОРАС_DEEZ_NUTZ_SUCK_ON_DEEZ_BALLS";
-#endif
     serverConnection_p->open(QUrl(SERVERS.cdnServer
         + QString("/id=%0&token=%1").arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }

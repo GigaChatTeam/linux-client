@@ -27,8 +27,8 @@ class Widget : public QWidget
     Q_OBJECT
 
 private:
-    Authorizer* helloScreen;
-    UserInterface* UI;
+    Authorizer* helloScreen = nullptr;
+    UserInterface* UI = nullptr;
 
     QListWidget* recentEvents;
     QList<RecentEvent*> eventsList;
@@ -36,7 +36,7 @@ private:
     QWidget* eventsAndUI;
     QHBoxLayout* eventsAndUILayout;
 
-    QBoxLayout* please_resize_authorizer;
+    QBoxLayout* please_resize_authorizer = nullptr;
 
     bool tokenIsPresent();
 
