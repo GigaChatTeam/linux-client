@@ -34,7 +34,7 @@ private:
     QList<RecentEvent*> eventsList;
 
     QWidget* eventsAndUI;
-    QHBoxLayout* eventsAndUILayout;
+    QHBoxLayout* eventsAndUILayout = nullptr;
 
     QBoxLayout* please_resize_authorizer = nullptr;
 
@@ -43,6 +43,9 @@ private:
     void setupUI();
     void setupConnections();
     void constructUI();
+
+    void newAuthorizer();
+
 public:
 
     QWebSocket* serverConnection_p;
@@ -50,9 +53,13 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+protected:
+    void keyPressEvent(QKeyEvent *e) override;
+
 public slots:
     void onAuthentication();
     void addRecentEvents(QList<RecentEvent*> REList);
+    void requireReauth();
 
 };
 #endif // WIDGET_H
