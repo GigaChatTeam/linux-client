@@ -1,19 +1,15 @@
 #include "widget.h"
 #include "utils/properties.h"
 
+// TODO: use these bad guys
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+
 #include <QApplication>
 #include <QTranslator>
 #include <QDir>
 
 #include <cstring>
-
-#ifdef QT_DEBUG
-    #include "utils/misc_functions.h"
-//    #ifdef SHARE_DIRECTORY
-//        #undef SHARE_DIRECTORY
-//        #define SHARE_DIRECTORY "/home/main/coding/linux-client/build/Debug/share"
-//    #endif
-#endif
 
 int main(int argc, char *argv[])
 {
@@ -23,18 +19,34 @@ int main(int argc, char *argv[])
     if(!shareDir.exists())
         shareDir.mkpath(".");
 
-#ifdef QT_DEBUG
-    qInfo() << "ROOT DIRECTORY\t\t" << "SHARE_DIRECTORY\t\t" << "BIN DIRECTORY\t\t";
-    qInfo() <<  ROOT_DIRECTORY<<"\t\t"<<SHARE_DIRECTORY<<"\t\t"<<BIN_DIRICTORY;
-    qInfo() << "ME TRYING TO GET DATE: " << getDateF();
-#endif
-
     for(int i = 0; i < argc; ++i)
     {
-        if (!std::strcmp(argv[i], "-l"))
+
+        if(!std::strcmp(argv[i], "--help"))
+        {
+            qInfo() << "some help options";
+            a.exit(0);
+            return 0; //is this code reachable?
+        }
+
+        if (!std::strcmp(argv[i], "--login-server")   ||
+            !std::strcmp(argv[i], "--auth-server"))
+        {
             SERVERS.loginServer = argv[++i];
-        if (!std::strcmp(argv[i], "-w"))
+        }
+
+        if (!std::strcmp(argv[i], "--rtcd-server")    ||
+            !std::strcmp(argv[i], "--websocket-server"))
+        {
             SERVERS.cdnServer = argv[++i];
+        }
+
+        if (!std::strcmp(argv[i], "--history-server") ||
+            !std::strcmp(argv[i], "--load-server")    ||
+            !std::strcmp(argv[i], "--history-load-server"))
+        {
+            SERVERS.hlbServer = argv[++i];
+        }
     }
 
     Widget w;

@@ -10,16 +10,17 @@ typedef struct {
     QByteArray accessToken;
     qint64 userID;
     std::vector<qint64> activeChannels,
-                               passiveChannels;
+                        passiveChannels;
 } USER_PROPERTIES_T;
 
 typedef struct {
     QString loginServer,
-            cdnServer;
+            cdnServer,
+            hlbServer;
 } SERVERS_T;
 
 typedef struct {
-    QString home, // will need if someone tries to build this for linux
+    QString home,
             var,
             db;
 } FILEPATHS_T;

@@ -72,6 +72,8 @@ void Widget::constructUI()
         // didn't spend 5 hours trying to figure out this segfault
 
     setupConnections();
+
+    openWebsocket();
 }
 
 void Widget::newAuthorizer()
@@ -126,9 +128,6 @@ void Widget::onAuthentication()
     delete helloScreen; helloScreen = nullptr;
 
     constructUI();
-
-    serverConnection_p->open(QUrl(SERVERS.cdnServer
-        + QString("/id=%0&token=%1").arg(QString::number(USER_PROPERTIES.userID), USER_PROPERTIES.accessToken)));
 }
 
 void Widget::addRecentEvents(QList<RecentEvent *> REList)

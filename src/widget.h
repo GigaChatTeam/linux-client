@@ -46,6 +46,15 @@ private:
 
     void newAuthorizer();
 
+    inline void openWebsocket() {
+        QUrl url =
+            SERVERS.cdnServer +
+            QString("/id=%0&token=%1").arg(
+                QString::number(USER_PROPERTIES.userID),
+                USER_PROPERTIES.accessToken);
+        serverConnection_p->open(url);
+    }
+
 public:
 
     QWebSocket* serverConnection_p;
