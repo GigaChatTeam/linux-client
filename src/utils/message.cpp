@@ -6,7 +6,7 @@ Message::Message(QString _sender,
                  QString _message,
                  MsgAlign status,
                  QWidget *parent)
-    : QFrame(parent), alignment{status}
+    : QFrame(parent), alignment{status}, confirmed{false}
 {
     layout = new QHBoxLayout(this);
     sender = new QLabel();
@@ -38,6 +38,15 @@ Message::Message(QString _sender,
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     setStyleSheet(StyleSheets::MessageSS);
+
+}
+
+void Message::makeUnsent()
+{
+
+}
+void Message::makeSent()
+{
 
 }
 

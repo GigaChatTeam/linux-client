@@ -30,6 +30,11 @@ public:
                      MsgAlign status = GC::received,
                      QWidget *parent = nullptr);
 
+    void makeUnsent();
+    void makeSent();
+
+    bool confirmed;
+
 };
 
 } // namespace GC

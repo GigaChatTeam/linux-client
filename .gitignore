@@ -6,3 +6,6 @@ source/compile
 *.docx
 *.bak
 accounts*
+gimp/*
+*.xcf
+*.xfc

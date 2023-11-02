@@ -80,17 +80,20 @@ public:
     void setupLayout();
     void setupConnections();
     ScrollingWidget();
+
+public slots:
+    void addMessage(const QString& text, qint64 _sender, GC::MsgAlign align);
+    void errorOccured();
+
+    void receiveTextMessage(QString message);
+    void sendTextMessage();
+
+public:
     static QString serializeMessage(const QString& messageText);
     static std::optional<QJsonObject> deserializeMessage(const QString& messageText);
 
     static void packageToString(const package &p, QString &s);
     static void stringToPackage(const QString &s, std::optional<package> &p);
 
-
-public slots:
-    void addMessage(const QString& text, qint64 _sender, GC::MsgAlign align);
-    void errorOccured();
-    void receiveTextMessage(QString message);
-    void sendTextMessage();
 };
 
