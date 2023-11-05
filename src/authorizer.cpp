@@ -36,8 +36,8 @@ void Authorizer::InputField::setupLayout()
 
     for(int i = 0; i < layout->count(); ++i)
         layout->itemAt(i)->widget()->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Expanding);
+                    QSizePolicy::MinimumExpanding,
+                    QSizePolicy::MinimumExpanding);
 }
 void Authorizer::InputField::setupConnections()
 {
@@ -96,24 +96,31 @@ Authorizer::Authorizer(QWidget *parent)
             Qt::DirectConnection);
 }
 
+bool Authorizer::onlyWhitespaces(const QString &&str)
+{
+    QString temp = str;
+    temp.removeIf([](auto x){return QChar(x).isSpace();});
+    return temp.isEmpty();
+}
+
 void Authorizer::sendLoginRequest()
 {
 
-    if (field->password->isDefault() || field->username->isDefault())
+    if (field->password->isDefault || field->username->isDefault)
     {
         failedAuth(tr("Error: username and password can't be empty"));
         return;
     }
 
-//#define JSON_ARGS_AUTH
-#define HTTP_ARGS_AUTH
-    QString requestData = QString(
-#ifdef JSON_ARGS_AUTH
-        "{\"username\":\"%1\", \"password\":\"%2\"}"
-#elifdef HTTPS_ARGS_AUTH // yes qtcreator, this is C+23. Cope with it.
-        "username=%1&password=%2"
-#endif
-                                  ).arg(field->username->text(), field->password->text());
+    if (onlyWhitespaces(field->password->text()) ||
+        onlyWhitespaces(field->username->text())  )
+    {
+        failedAuth(tr("Error: username and password can't consist only of whitespaces"));
+        return;
+    }
+
+    QString requestData = QString("username=%1&password=%2")
+                              .arg(field->username->text(), field->password->text());
 
     DEBUG("POST REQUEST: " << requestData);
 
@@ -190,7 +197,7 @@ void Authorizer::failedAuth(QString context)
         setStyleSheet(StyleSheets::FailedAuthSS);
         QLabel* temp = new QLabel();
         temp->setWordWrap(true);
-        temp->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        temp->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         temp->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         temp->setStyleSheet("color: red; font: bold 12pt");
         field->layout->addWidget(temp, 9, 0, 1, 4);

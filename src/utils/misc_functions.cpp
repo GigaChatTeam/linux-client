@@ -21,3 +21,12 @@ shit_happened:
     return "";
 #endif
 }
+
+std::optional<MessageType::MessageType> MessageType::toMessageType(QString type)
+{
+    return std::nullopt;
+}
+QString MessageType::toString(MessageType type)
+{
+    return types[static_cast<size_t>(type)]; // ! TYPES DECLARATIONS MUST BE IN ORDER
+}

@@ -4,41 +4,45 @@ namespace GC {
 
 Message::Message(QString _sender,
                  QString _message,
+                 bool showAuthor,
                  MsgAlign status,
                  QWidget *parent)
-    : QFrame(parent), alignment{status}, confirmed{false}
+    : QFrame(parent), alignment{status}, is_confirmed{false}
 {
-    layout = new QHBoxLayout(this);
-    sender = new QLabel();
-    message = new QLabel();
-    message->setWordWrap(false);
 
-    if (_sender.at(0) == '\e'){
-        _sender = "Could not resolve author";
-        sender->setStyleSheet(StyleSheets::MessageErrorSS);
+    layout = new QHBoxLayout(this);
+    sender_message = new QVBoxLayout();
+
+    if (showAuthor) {
+        sender = new QLabel();
+        sender->setStyleSheet(StyleSheets::MessageSenderSS);
+        if (_sender.at(0) == '\e'){
+            _sender = "Could not resolve author";
+            sender->setStyleSheet(StyleSheets::MessageErrorSS);
+        }
+        sender->setText(_sender);
+        sender_message->addWidget(sender, 1);
     }
+
+    message = new QLabel();
+    message->setWordWrap(true);
+    message->setStyleSheet(StyleSheets::MessageSS);
     if (_message.at(0) == '\e'){
         _message = "Error receiving a message";
         message->setStyleSheet(StyleSheets::MessageErrorSS);
     }
-
-    sender->setText(_sender);
     message->setText(_message);
-    message->setFixedWidth(300);
+    message->setMinimumWidth(100);
+    message->setMaximumWidth(500);
 
-    sender_message = new QVBoxLayout();
-    sender_message->addWidget(sender, 1);
     sender_message->addWidget(message, 2);
 
-    layout->addLayout(sender_message);
 
+    layout->addLayout(sender_message);
     Qt::Alignment alignment = Qt::AlignVCenter | (status == sent ? Qt::AlignRight : Qt::AlignLeft);
     layout->setAlignment(alignment);
     sender_message->setAlignment(alignment);
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-
-    setStyleSheet(StyleSheets::MessageSS);
-
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
 }
 
 void Message::makeUnsent()

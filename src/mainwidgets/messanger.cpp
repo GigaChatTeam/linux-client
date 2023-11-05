@@ -51,7 +51,12 @@ void ScrollingWidget::addMessage(const QString& text, qint64 _sender, GC::MsgAli
     QString sender = _sender >= 0 ? QString::number(_sender): "\e";
     // TODO: IMPLEMENT SENDER NAME LOOKUP (HLB)
 
-    GC::Message* temp = new GC::Message(sender, text, align);
+    GC::Message* temp = new GC::Message(sender,
+                                        text,
+                                        _sender != lastSender || _sender < 0,
+                                        align);
+    lastSender = _sender;
+
     shownMessagesLayout->addWidget(temp);
     QScrollBar* position = shownMessagesScroller->verticalScrollBar();
 
@@ -85,6 +90,7 @@ void ScrollingWidget::sendTextMessage()
 {
     QString text = inputLine->text();
     inputLine->setText("");
+    if (text.isEmpty() || inputLine->isDefault) text = " ";
     serverConnection->sendTextMessage(serializeMessage(text));
     addMessage(text, USER_PROPERTIES.userID, GC::sent);
 }
@@ -138,7 +144,7 @@ void ScrollingWidget::stringToPackage(const QString &s, std::optional<package> &
         switch (count)
         {
         case 1: percent_1 = i; break;
-        case 2: percent_2 = i; [[fallthrough]];
+        case 2: percent_2 = i; Q_FALLTHROUGH();
         default: goto for_break; // falling through to this
         }
     }

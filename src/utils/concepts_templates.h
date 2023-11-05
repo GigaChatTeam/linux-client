@@ -15,14 +15,8 @@ concept is_one_of = (std::is_same<T, Ts>::value || ...);
 
 template <typename T>
 concept json_type = is_one_of<
-    T,
-    bool,
-    int,
-    qint64,
-    double,
-    QString,
-    QJsonObject,
-    QJsonArray
+    T, bool, int, qint64, double,
+    QString, QJsonObject, QJsonArray
 >;
 
 template <json_type T>

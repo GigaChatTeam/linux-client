@@ -75,6 +75,7 @@ class ScrollingWidget : public QWidget
 public:
     QWebSocket* serverConnection;
     QHash<QString, GC::Message*> messagesDB; // TODO: store pointers to messages through control hash
+    qint64 lastSender;
 
     void setupUI();
     void setupLayout();
