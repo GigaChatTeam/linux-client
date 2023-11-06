@@ -30,8 +30,8 @@ class Message : public QFrame
     MsgAlign alignment;
 
 public:
-    explicit Message(QString _sender,
-                     QString _message,
+    explicit Message(QString &_sender,
+                     QString &_message,
                      bool showAuthor,
                      MsgAlign status,
                      QWidget *parent = nullptr);

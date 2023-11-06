@@ -2,12 +2,12 @@
 
 namespace GC {
 
-Message::Message(QString _sender,
-                 QString _message,
+Message::Message(QString &_sender,
+                 QString &_message,
                  bool showAuthor,
                  MsgAlign status,
                  QWidget *parent)
-    : QFrame(parent), alignment{status}, is_confirmed{false}
+    : QFrame{parent}, alignment{status}, is_confirmed{false}
 {
 
     layout = new QHBoxLayout(this);

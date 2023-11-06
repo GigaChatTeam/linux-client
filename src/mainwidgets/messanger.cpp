@@ -43,21 +43,37 @@ ScrollingWidget::ScrollingWidget()
     setupLayout();
     setupConnections();
 
+    lastAddedGroup = new GC::MessageGroup(0, GC::sent, nullptr);
+
     DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
 }
 
-void ScrollingWidget::addMessage(const QString& text, qint64 _sender, GC::MsgAlign align)
+void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign align)
 {
     QString sender = _sender >= 0 ? QString::number(_sender): "\e";
     // TODO: IMPLEMENT SENDER NAME LOOKUP (HLB)
 
-    GC::Message* temp = new GC::Message(sender,
-                                        text,
-                                        _sender != lastSender || _sender < 0,
-                                        align);
-    lastSender = _sender;
+    GC::Message* currentMessage = new GC::Message(
+        sender,
+        text,
+        _sender != lastAddedGroup->author || _sender < 0,
+        align
+    );
 
-    shownMessagesLayout->addWidget(temp);
+    if (_sender == lastAddedGroup->author) {
+        lastAddedGroup->addMessage(currentMessage);
+        DEBUG("addding message to prev group");
+        return;
+    }
+
+    GC::MessageGroup * currentGroup = new GC::MessageGroup(
+        _sender,
+        align,
+        currentMessage
+    );
+
+    shownMessagesLayout->addWidget(currentGroup);
+    lastAddedGroup = currentGroup;
     QScrollBar* position = shownMessagesScroller->verticalScrollBar();
 
     DEBUG(position->maximum() << position->value());

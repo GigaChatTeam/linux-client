@@ -7,6 +7,7 @@
 #include "utils/message.h"
 #include "utils/concepts_templates.h"
 #include "utils/misc_functions.h"
+#include "utils/messagegroup.h"
 #include <QAbstractScrollArea>
 #include <QScrollArea>
 #include <QPushButton>
@@ -29,6 +30,7 @@
 #include <QtCompilerDetection>
 
 #include <optional>
+#include <utility>
 
 // TODO: REMOVE LATER
 #ifdef QT_DEBUG
@@ -75,7 +77,7 @@ class ScrollingWidget : public QWidget
 public:
     QWebSocket* serverConnection;
     QHash<QString, GC::Message*> messagesDB; // TODO: store pointers to messages through control hash
-    qint64 lastSender;
+    GC::MessageGroup* lastAddedGroup;
 
     void setupUI();
     void setupLayout();
@@ -83,7 +85,7 @@ public:
     ScrollingWidget();
 
 public slots:
-    void addMessage(const QString& text, qint64 _sender, GC::MsgAlign align);
+    void addMessage(QString &text, qint64 _sender, GC::MsgAlign align);
     void errorOccured();
 
     void receiveTextMessage(QString message);

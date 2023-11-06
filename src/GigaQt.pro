@@ -26,6 +26,7 @@ SOURCES += \
 	authorizer.cpp \
 	main.cpp \
 	mainwidgets/gridscrollingwidget.cpp \
+	utils/messagegroup.cpp \
 	mainwidgets/messanger.cpp \
 	mainwidgets/undefinedpage.cpp \
 	stylesheets.cpp \
@@ -40,6 +41,7 @@ SOURCES += \
 HEADERS += \
 	authorizer.h \
 	mainwidgets/gridscrollingwidget.h \
+	utils/messagegroup.h \
 	mainwidgets/messanger.h \
 	mainwidgets/undefinedpage.h \
 	stylesheets.h \
