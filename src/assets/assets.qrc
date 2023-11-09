@@ -5,4 +5,8 @@
         <file>LoginBN.svg</file>
     </qresource>
     <qresource prefix="/"/>
+    <qresource prefix="/icons_builtin">
+        <file>unread_mark.png</file>
+        <file>read_mark.png</file>
+    </qresource>
 </RCC>

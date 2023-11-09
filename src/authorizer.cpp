@@ -36,8 +36,8 @@ void Authorizer::InputField::setupLayout()
 
     for(int i = 0; i < layout->count(); ++i)
         layout->itemAt(i)->widget()->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Expanding);
+                    QSizePolicy::MinimumExpanding,
+                    QSizePolicy::MinimumExpanding);
 }
 void Authorizer::InputField::setupConnections()
 {
@@ -96,26 +96,36 @@ Authorizer::Authorizer(QWidget *parent)
             Qt::DirectConnection);
 }
 
+bool Authorizer::onlyWhitespaces(const QString &&str)
+{
+    QString temp = str;
+    temp.removeIf([](auto x){return QChar(x).isSpace();});
+    return temp.isEmpty();
+}
+
 void Authorizer::sendLoginRequest()
 {
 
-    if (field->password->isDefault() || field->username->isDefault())
+    if (field->password->isDefault || field->username->isDefault)
     {
         failedAuth(tr("Error: username and password can't be empty"));
         return;
     }
 
-    QString requestUrl = QString("/"
-#ifndef GIGAQT_AUTH_PARSE_TEST
-                                 "auth"
-#else
-                                 "debug"
-#endif
-                                 "?username=%1&password=%2")
-                            .arg(field->username->text(), field->password->text());
+    if (onlyWhitespaces(field->password->text()) ||
+        onlyWhitespaces(field->username->text())  )
+    {
+        failedAuth(tr("Error: username and password can't consist only of whitespaces"));
+        return;
+    }
 
-    QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + requestUrl));
-    mgr.get(authRequest);
+    QString requestData = QString("username=%1&password=%2")
+                              .arg(field->username->text(), field->password->text());
+
+    DEBUG("POST REQUEST: " << requestData);
+
+    QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + "/auth"));
+    mgr.post(authRequest, requestData.toUtf8());
 }
 void Authorizer::parseResponse(QNetworkReply* response)
 {
@@ -142,14 +152,12 @@ void Authorizer::parseResponse(QNetworkReply* response)
 #endif
     }
 
-    jsonEscapeString.replace("\\", 1, "", 0); // I cant't fucking believe that this line of code costed me 7 fukcing horts
+    jsonEscapeString.replace("\\", 1, "", 0); // I cant't fucking believe that this line of code cost me 7 fukcing hours
     QJsonObject respJson = QJsonDocument::fromJson(jsonEscapeString).object();
 
 
     //not cutting out of the source just to remember all the suffering
 #ifdef GIGAQT_AUTH_PARSE_TEST
-    // TODO: fix response parsing when receiving from server
-    // it works with these tests, but not with actual server
     QByteArray __success_ex__ = "{\"auth-data\":{\"AAAA\": true}}",
                __fail_ex__ = "{\"status\": \"Refused\", \"reason\": \"BadRequest\", \"description\": \"UserNotFound\"}";
     respJson = QJsonDocument::fromJson(
@@ -189,7 +197,7 @@ void Authorizer::failedAuth(QString context)
         setStyleSheet(StyleSheets::FailedAuthSS);
         QLabel* temp = new QLabel();
         temp->setWordWrap(true);
-        temp->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        temp->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         temp->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         temp->setStyleSheet("color: red; font: bold 12pt");
         field->layout->addWidget(temp, 9, 0, 1, 4);
@@ -205,3 +213,4 @@ void Authorizer::resizeEvent(QResizeEvent *e)
     QSvgWidget::resizeEvent(e);
     field->reposition(geometry());
 }
+

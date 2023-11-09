@@ -43,56 +43,143 @@ ScrollingWidget::ScrollingWidget()
     setupLayout();
     setupConnections();
 
+    lastAddedGroup = new GC::MessageGroup(0, GC::sent, nullptr);
+
     DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
 }
 
-QString ScrollingWidget::serializeMessage(const QString &messageText)
+void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign align)
 {
-    QJsonObject ret;
-    ret["text"] = messageText;
-    ret["type"] = "MESSAGE-POST";
-    ret["channel"] = -1;
-    ret["author"] = USER_PROPERTIES.userID;
+    QString sender = _sender >= 0 ? QString::number(_sender): "\e";
+    // TODO: IMPLEMENT SENDER NAME LOOKUP (HLB)
 
-    return QJsonDocument(ret).toJson(QJsonDocument::Compact);
-}
-QJsonObject ScrollingWidget::deserializeMessage(const QString &messageText)
-{
-    QJsonObject ret = QJsonDocument::fromJson(messageText.toUtf8()).object();
-    return ret;
-}
+    GC::Message* currentMessage = new GC::Message(
+        sender,
+        text,
+        _sender != lastAddedGroup->author || _sender < 0,
+        align
+    );
 
-void ScrollingWidget::addMessage(const QString& text, const QString& sender, GC::MsgAlign align)
-{
-    GC::Message* temp = new GC::Message(sender, text, align);
-    shownMessagesLayout->addWidget(temp);
+    if (_sender == lastAddedGroup->author) {
+        lastAddedGroup->addMessage(currentMessage);
+        DEBUG("addding message to prev group");
+        return;
+    }
+
+    GC::MessageGroup * currentGroup = new GC::MessageGroup(
+        _sender,
+        align,
+        currentMessage
+    );
+
+    shownMessagesLayout->addWidget(currentGroup);
+    lastAddedGroup = currentGroup;
     QScrollBar* position = shownMessagesScroller->verticalScrollBar();
 
     DEBUG(position->maximum() << position->value());
     position->setSliderPosition(position->maximum());
     DEBUG(position->maximum() << position->value());
 }
-
 void ScrollingWidget::errorOccured()
 {
     DEBUG("ERROR OCCURED");
     qInfo() << "\e[36;41m ERRORS YOU MOTHERFUCKER\e[0m";
 }
+
 void ScrollingWidget::receiveTextMessage(QString message)
 {
-    DEBUG(message);
-    QJsonObject msgContents = deserializeMessage(message);
-    QString contents = getJsonSafe<QString>("text", msgContents)
-                .value_or("\e"),
-            author = getJsonSafe<QString>("author", msgContents)
-                .value_or("\e"); // \e stands for error
+    std::optional<QJsonObject> msgContents = deserializeMessage(message);
+
+    // more monadic operations, let's go
+    QString contents = msgContents.and_then(
+        [](const QJsonObject& contained) -> std::optional<QString> {
+            return getJsonSafe<QString>("text", contained);
+        }).value_or("\e");
+    qint64 author = msgContents.and_then(
+        [](const QJsonObject& contained) -> std::optional<qint64> {
+            return getJsonSafe<qint64>("author", contained);
+        }).value_or(-1);
+
     addMessage(contents, author, GC::received);
 }
 void ScrollingWidget::sendTextMessage()
 {
     QString text = inputLine->text();
     inputLine->setText("");
+    if (text.isEmpty() || inputLine->isDefault) text = " ";
     serverConnection->sendTextMessage(serializeMessage(text));
-    addMessage(text, tr("you"), GC::sent);
+    addMessage(text, USER_PROPERTIES.userID, GC::sent);
 }
+
+QString ScrollingWidget::serializeMessage(const QString &messageText)
+{
+    QJsonObject json;
+    QString control_hash, message_type;
+
+    json["text"] = messageText;
+    json["channel"] = -1;
+    json["author"] = USER_PROPERTIES.userID;
+
+    control_hash = "000000000000"; // TODO!!!
+    message_type = "MESSAGE-POST"; // TODO!!!
+
+    package ret {
+        .command_type = message_type,
+        .control_hash = control_hash.toUtf8(),
+        .message_data = QJsonDocument(json).toJson(QJsonDocument::Compact)
+    };
+    QString serialized;
+
+    packageToString(ret, serialized);
+    DEBUG(serialized);
+    return serialized;
+}
+std::optional<QJsonObject> ScrollingWidget::deserializeMessage(const QString &messageText)
+{
+
+    std::optional<package> received = std::nullopt;
+    stringToPackage(messageText, received);
+
+    if (!received.has_value())
+        return std::nullopt;
+
+    QJsonObject ret = QJsonDocument::fromJson(received->message_data.toUtf8()).object();
+    return std::make_optional(ret);
+}
+
+void ScrollingWidget::stringToPackage(const QString &s, std::optional<package> &p)
+{
+    DEBUG(__PRETTY_FUNCTION__);
+    qint64 percent_1, percent_2;
+    quint8 count = 0;
+    for (int i = 0; i < s.size(); ++i)
+    {
+        if (s[i] != '%') continue;
+
+        count++;
+        switch (count)
+        {
+        case 1: percent_1 = i; break;
+        case 2: percent_2 = i; Q_FALLTHROUGH();
+        default: goto for_break; // falling through to this
+        }
+    }
+for_break:
+
+    if (count != 2 || percent_2 < percent_1 || percent_2 >= s.size() || percent_1 < 0)
+    {
+        p = std::nullopt;
+        return;
+    }
+    p = std::make_optional(package {
+        .command_type = s.sliced(0, percent_1),
+        .control_hash = s.sliced(percent_1 + 1, percent_2 - percent_1 - 1).toUtf8(),
+        .message_data = s.sliced(percent_2 + 1)
+    });
+}
+void ScrollingWidget::packageToString(const package &p, QString &s)
+{
+    s = QString("%1%%2%%3").arg(p.command_type, p.control_hash, p.message_data);
+}
+
 

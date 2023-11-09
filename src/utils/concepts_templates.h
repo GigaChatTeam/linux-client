@@ -6,21 +6,17 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QtSystemDetection>
 
+#include <cstdio>
 
 template <typename T, typename...Ts>
 concept is_one_of = (std::is_same<T, Ts>::value || ...);
 
 template <typename T>
 concept json_type = is_one_of<
-    T,
-    bool,
-    int,
-    qint64,
-    double,
-    QString,
-    QJsonObject,
-    QJsonArray
+    T, bool, int, qint64, double,
+    QString, QJsonObject, QJsonArray
 >;
 
 template <json_type T>
@@ -51,3 +47,5 @@ std::optional<T> getJsonSafe(QString key, const QJsonObject& o)
                 : std::nullopt;
     return std::nullopt;
 }
+
+

@@ -19,10 +19,11 @@ void NoNewLineQLineEdit::keyPressEvent(QKeyEvent *e)
         return;
     }
 
-    if (isDefault())
+    if (isDefault)
     {
         setText("");
         setStyleSheet(changedStyleSheet);
+        isDefault = false;
         if (hidden) setEchoMode(QLineEdit::Password);
     }
     QLineEdit::keyPressEvent(e);
@@ -30,12 +31,13 @@ void NoNewLineQLineEdit::keyPressEvent(QKeyEvent *e)
     {
         setStyleSheet(defaultStyleSheet);
         setText(defaultText);
+        isDefault = true;
         setEchoMode(QLineEdit::Normal);
     }
 }
 
 void NoNewLineQLineEdit::setPasswordHide(int ckechboxState)
 {
-    hidden = ckechboxState == Qt::Unchecked && !isDefault();
+    hidden = ckechboxState == Qt::Unchecked && !isDefault;
     setEchoMode(hidden ? QLineEdit::Password: QLineEdit::Normal);
 }
