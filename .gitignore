@@ -1,4 +1,6 @@
+.build*/
 build*/
+*build*/
 preprint*
 source/compile
 *.user
@@ -9,3 +11,5 @@ accounts*
 gimp/*
 *.xcf
 *.xfc
+*target/
+
