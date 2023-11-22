@@ -111,17 +111,17 @@ void ScrollingWidget::sendTextMessage()
     addMessage(text, USER_PROPERTIES.userID, GC::sent);
 }
 
-QString ScrollingWidget::serializeMessage(const QString &messageText)
+QString ScrollingWidget::serializeMessage(const QString &messageText /*MessageType::MessageType type*/)
 {
     QJsonObject json;
     QString control_hash, message_type;
 
     json["text"] = messageText;
-    json["channel"] = -1;
+    json["channel"] = -1; // TODO!!!
     json["author"] = USER_PROPERTIES.userID;
 
-    control_hash = "000000000000"; // TODO!!!
-    message_type = "MESSAGE-POST"; // TODO!!!
+    control_hash = getDateF();
+    message_type = MessageType::toString(MessageType::USER_CHANNELS_MESSAGES_POST_NEW); // TODO: IMPLEMENT
 
     package ret {
         .command_type = message_type,

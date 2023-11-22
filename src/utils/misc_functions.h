@@ -2,7 +2,8 @@
 #define MISC_FUNCTIONS_H
 
 #include <QtSystemDetection>
-#include <QGlobalStatic>
+//#include <QGlobalStatic>
+#include <QDateTime>
 #include <QString>
 #include <QDebug>
 #include <QHash>
@@ -34,6 +35,8 @@ enum MessageType : unsigned short {
     // System
     SYSTEM_CHANNELS_LISTEN_ADD,
     SYSTEM_CHANNELS_LISTEN_REMOVE,
+
+    LAST_ELEMENT
 };
 
 // THESE MUST BE IN THE SAME ORDER AS MESSAGE_TYPE
@@ -59,6 +62,9 @@ constexpr const char* types[] = {
     "SYSTEM-CHANNELS-LISTEN-ADD",
     "SYSTEM-CHANNELS-LISTEN-REMOVE",
 };
+
+QHash<const char*, MessageType> init_hash();
+QHash<const char*, MessageType> &get_map();
 
 std::optional<MessageType> toMessageType(QString type);
 QString toString(MessageType type);

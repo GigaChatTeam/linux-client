@@ -171,7 +171,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
     DEBUG(getJsonSafe<QJsonObject>("auth-data", respJson).has_value() << respJson["auth-data"].toObject());
 
     // MONADSSS YESSS
-    getJsonSafe<QJsonObject>("auth-data", respJson)
+    getJsonSafe<QJsonObject>("data", respJson)
     .or_else([&respJson, this] -> std::optional<QJsonObject> { // shut up qtcreator, this is valid syntax in C++23
         DEBUG("OR_ELSE TRIGGERED: " << __PRETTY_FUNCTION__);
         failedAuth(QString("Error: ") + getJsonSafe<QString>("description", respJson)
@@ -185,6 +185,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
                 return maybe_value.toUtf8();
             }).value_or(QByteArray());
         USER_PROPERTIES.userID = getJsonSafe<qint64>("id", data).value_or(-1);
+        USER_PROPERTIES.username = getJsonSafe<QString>("username", data).value_or("");
         DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
         emit successfullyAuthorized();
         return std::nullopt;

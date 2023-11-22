@@ -13,3 +13,4 @@ gimp/*
 *.xfc
 *target/
 
+LOCAL*

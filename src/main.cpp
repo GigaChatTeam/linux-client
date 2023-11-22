@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "utils/properties.h"
+#include "utils/misc_functions.h"
 
 // TODO: use these bad guys
 #include <QCommandLineParser>

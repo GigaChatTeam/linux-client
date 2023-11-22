@@ -6,11 +6,14 @@
 #include <QByteArray>
 #include <QUrl>
 
+// may result in data initialization faliure
+// TODO: reconsider life choices
 typedef struct {
     QByteArray accessToken;
     qint64 userID;
     std::vector<qint64> activeChannels,
                         passiveChannels;
+    QString username;
 } USER_PROPERTIES_T;
 
 typedef struct {
