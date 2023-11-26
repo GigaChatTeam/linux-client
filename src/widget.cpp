@@ -61,7 +61,7 @@ void Widget::constructUI()
     if (this->layout() != nullptr) std::terminate();
 
     eventsAndUILayout = new QHBoxLayout(this);
-    UI = new UserInterface();
+    UI = new UserInterface(/*this*/);
     recentEvents = new QListWidget();
     eventsAndUILayout->addWidget(recentEvents, 1);
     eventsAndUILayout->addWidget(UI, 9);
@@ -73,6 +73,7 @@ void Widget::constructUI()
 
     setupConnections();
 
+    DEBUG(__PRETTY_FUNCTION__);
     openWebsocket();
 }
 

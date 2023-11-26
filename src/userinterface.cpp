@@ -22,5 +22,10 @@ UserInterface::UserInterface(QWidget *parent) : QTabWidget{parent}
 {
     constructWindowArray();
     constructTabWidget();
+}
 
+UserInterface::~UserInterface()
+{
+    DEBUG(__PRETTY_FUNCTION__);
+    DEBUG("DELETET USERINTERFACE: " << this);
 }

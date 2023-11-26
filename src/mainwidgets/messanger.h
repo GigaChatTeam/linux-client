@@ -82,7 +82,8 @@ public:
     void setupUI();
     void setupLayout();
     void setupConnections();
-    ScrollingWidget();
+    explicit ScrollingWidget();
+    ~ScrollingWidget();
 
 public slots:
     void addMessage(QString &text, qint64 _sender, GC::MsgAlign align);

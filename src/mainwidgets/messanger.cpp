@@ -29,8 +29,11 @@ void ScrollingWidget::setupLayout()
 void ScrollingWidget::setupConnections()
 {
     connect(serverConnection, SIGNAL(textMessageReceived(QString)), this, SLOT(receiveTextMessage(QString)));
-    connect(serverConnection, SIGNAL(disconnected()), this, SLOT(errorOccured()));
     connect(serverConnection, SIGNAL(aboutToClose()), this, SLOT(errorOccured())); // TODO: DELETE
+    connect(serverConnection, &QWebSocket::connected, this, [&](){
+        qDebug() << "\e[1;91mQWEBSOCKER CONNECTED\e[0m";
+        DEBUG(__PRETTY_FUNCTION__ << serverConnection->resourceName());
+    });
     connect(inputLine, SIGNAL(enterPressed()), this, SLOT(sendTextMessage()));
     connect(sendButton, SIGNAL(pressed()), this, SLOT(sendTextMessage()));
 }
@@ -39,6 +42,7 @@ ScrollingWidget::ScrollingWidget()
     : QWidget()
 {
     serverConnection = new QWebSocket();
+    serverConnection->setParent(this);
     setupUI();
     setupLayout();
     setupConnections();
@@ -46,6 +50,12 @@ ScrollingWidget::ScrollingWidget()
     lastAddedGroup = new GC::MessageGroup(0, GC::sent, nullptr);
 
     DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
+}
+
+ScrollingWidget::~ScrollingWidget()
+{
+    DEBUG(__PRETTY_FUNCTION__ << "\e[1;91mDESTRUCTOR CALLED\e[0m");
+    delete serverConnection;
 }
 
 void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign align)
@@ -82,8 +92,8 @@ void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign ali
 }
 void ScrollingWidget::errorOccured()
 {
-    DEBUG("ERROR OCCURED");
-    qInfo() << "\e[36;41m ERRORS YOU MOTHERFUCKER\e[0m";
+    DEBUG(__PRETTY_FUNCTION__);
+    qInfo() << "\e[36;41m THE SOCKET IS ABOUT TO CLOSE \e[0m";
 }
 
 void ScrollingWidget::receiveTextMessage(QString message)
@@ -116,9 +126,10 @@ QString ScrollingWidget::serializeMessage(const QString &messageText /*MessageTy
     QJsonObject json;
     QString control_hash, message_type;
 
+    json["type"] = "TEXT";
     json["text"] = messageText;
-    json["channel"] = -1; // TODO!!!
-    json["author"] = USER_PROPERTIES.userID;
+    json["channel"] = 5; // TODO!!!
+    //json["author"] = USER_PROPERTIES.userID;
 
     control_hash = getDateF();
     message_type = MessageType::toString(MessageType::USER_CHANNELS_MESSAGES_POST_NEW); // TODO: IMPLEMENT

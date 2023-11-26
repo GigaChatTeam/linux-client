@@ -51,7 +51,7 @@ constexpr const char* types[] = {
     "USER-CHANNELS-JOIN",
     "USER-CHANNELS-LEAVE",
     // Communication
-    "USER-CHANNELS-MESSAGES-POST-NEW",
+    "5CF", // TODO: change everything to hexadecimal
     "USER-CHANNELS-MESSAGES-POST-FOWARD-MESSAGE",
     "USER-CHANNELS-MESSAGES-POST-FORWARD-POST",
     "USER-CHANNELS-MESSAGES-EDIT",

@@ -80,7 +80,7 @@ Authorizer::InputField::~InputField()
 Authorizer::Authorizer(QWidget *parent)
     : QSvgWidget{parent}
 {
-    mgr.setTransferTimeout(5000); //5 seconds. may be changed later.
+    mgr.setTransferTimeout(1000); //5 seconds. may be changed later.
 
     setMinimumSize(666, 420);
     load(BGImagePath);

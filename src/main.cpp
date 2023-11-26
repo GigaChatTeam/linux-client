@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
         {
             qInfo() << "some help options";
             a.exit(0);
-            return 0; //is this code reachable?
         }
 
         if (!std::strcmp(argv[i], "--login-server")   ||

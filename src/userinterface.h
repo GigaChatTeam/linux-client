@@ -29,6 +29,7 @@ public:
 
     void constructWindowArray();
     void constructTabWidget();
-    UserInterface(QWidget* parent = nullptr);
+    explicit UserInterface(QWidget* parent = nullptr);
+    ~UserInterface();
 };
 
