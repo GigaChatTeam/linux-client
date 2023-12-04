@@ -7,6 +7,7 @@
 #include "userinterface.h"
 #include "utils/recentevent.h"
 #include "utils/properties.h"
+#include "utils/misc_functions.h"
 
 #include <QObject>
 
@@ -21,6 +22,7 @@
 #include <QFile>
 #include <QString>
 #include <QWebSocket>
+
 
 class Widget : public QWidget
 {

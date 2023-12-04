@@ -11,8 +11,8 @@ class NoNewLineQLineEdit : public QLineEdit
     Q_OBJECT
 public:
     NoNewLineQLineEdit(QWidget* parent);
-    NoNewLineQLineEdit(const QString &str, QWidget* parent = nullptr);
-    NoNewLineQLineEdit(const QString &str, bool pw, QWidget* parent = nullptr);
+    NoNewLineQLineEdit(const QString &str, QWidget* parent);
+    NoNewLineQLineEdit(const QString &str, bool pw, QWidget* parent);
     ~NoNewLineQLineEdit();
 
     bool hidden;

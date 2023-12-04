@@ -26,7 +26,7 @@ public:
     QLabel *authorLabel;
     Qt::Alignment align_status;
 
-    explicit MessageGroup(qint64 msgAuthor, MsgAlign status, QWidget* firstMessage = nullptr);
+    explicit MessageGroup(QWidget* parent, qint64 msgAuthor, MsgAlign status, QWidget* firstMessage = nullptr);
 
     bool addMessage(QWidget* message, qint64 msgAuthor = -1); // if author is present, return the success of operation
     bool addTextMessage(const QString &text, qint64 msgAuthor = -1); // same here

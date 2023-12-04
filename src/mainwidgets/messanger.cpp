@@ -6,15 +6,15 @@ void ScrollingWidget::setupUI()
     shownMessagesLayout = new QVBoxLayout(shownMessages);
     shownMessagesLayout->setAlignment(Qt::AlignTop);
 
-    shownMessagesScroller = new QScrollArea();
+    shownMessagesScroller = new QScrollArea(this);
 
     shownMessagesScroller->setWidgetResizable(true);
     shownMessagesScroller->setWidget(shownMessages);
     shownMessagesScroller->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     shownMessagesScroller->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    inputLine = new NoNewLineQLineEdit(tr("Message"));
-    sendButton= new QPushButton(tr("send"));
+    inputLine = new NoNewLineQLineEdit(tr("Message"), this);
+    sendButton= new QPushButton(tr("send"), this);
 }
 void ScrollingWidget::setupLayout()
 {
@@ -38,8 +38,8 @@ void ScrollingWidget::setupConnections()
     connect(sendButton, SIGNAL(pressed()), this, SLOT(sendTextMessage()));
 }
 
-ScrollingWidget::ScrollingWidget()
-    : QWidget()
+ScrollingWidget::ScrollingWidget(QWidget* parent)
+    : QWidget{parent}
 {
     serverConnection = new QWebSocket();
     serverConnection->setParent(this);
@@ -47,7 +47,7 @@ ScrollingWidget::ScrollingWidget()
     setupLayout();
     setupConnections();
 
-    lastAddedGroup = new GC::MessageGroup(0, GC::sent, nullptr);
+    lastAddedGroup = new GC::MessageGroup(this, 0, GC::sent, nullptr);
 
     DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
 }
@@ -67,7 +67,8 @@ void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign ali
         sender,
         text,
         _sender != lastAddedGroup->author || _sender < 0,
-        align
+        align,
+        lastAddedGroup // the ownership is transferred anyways so i think i should pass a nullptr instead...
     );
 
     if (_sender == lastAddedGroup->author) {
@@ -77,6 +78,7 @@ void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign ali
     }
 
     GC::MessageGroup * currentGroup = new GC::MessageGroup(
+        this,
         _sender,
         align,
         currentMessage

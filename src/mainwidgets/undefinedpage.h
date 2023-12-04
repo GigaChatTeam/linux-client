@@ -7,7 +7,7 @@ class UndefinedPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UndefinedPage(QWidget *parent = nullptr);
+    explicit UndefinedPage(QWidget *parent);
     
 signals:
     

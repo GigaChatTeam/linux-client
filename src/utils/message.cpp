@@ -14,7 +14,7 @@ Message::Message(QString &_sender,
     sender_message = new QVBoxLayout();
 
     if (showAuthor) {
-        sender = new QLabel();
+        sender = new QLabel(this);
         sender->setStyleSheet(StyleSheets::MessageSenderSS);
         if (_sender.at(0) == '\e'){
             _sender = "Could not resolve author";
@@ -24,7 +24,7 @@ Message::Message(QString &_sender,
         sender_message->addWidget(sender, 1);
     }
 
-    message = new QLabel();
+    message = new QLabel(this);
     message->setWordWrap(true);
     message->setStyleSheet(StyleSheets::MessageSS);
     if (_message.at(0) == '\e'){
@@ -43,6 +43,11 @@ Message::Message(QString &_sender,
     layout->setAlignment(alignment);
     sender_message->setAlignment(alignment);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
+}
+
+Message::~Message()
+{
+    delete sender_message;
 }
 
 void Message::makeUnsent()

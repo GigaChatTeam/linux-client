@@ -34,7 +34,8 @@ public:
                      QString &_message,
                      bool showAuthor,
                      MsgAlign status,
-                     QWidget *parent = nullptr);
+                     QWidget *parent);
+    ~Message();
 
     void makeUnsent();
     void makeSent();

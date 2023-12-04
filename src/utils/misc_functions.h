@@ -2,15 +2,29 @@
 #define MISC_FUNCTIONS_H
 
 #include <QtSystemDetection>
-//#include <QGlobalStatic>
 #include <QDateTime>
 #include <QString>
+#include <QWidget>
+#include <QLayout>
 #include <QDebug>
 #include <QHash>
 
 #include <optional>
 
+#define DELETEPTR(pointer) do {	\
+	delete pointer; pointer = 0;	\
+} while(0)
+
 QString getDateF();
+
+inline void deleteLayoutWidgets(QLayout* p) {
+    int i = 0;
+    QLayoutItem *w;
+    while( nullptr != (w = p->itemAt(i)) ) {
+        if (!w->isEmpty()) delete w->widget();
+    }
+}
+
 
 namespace MessageType {
 
