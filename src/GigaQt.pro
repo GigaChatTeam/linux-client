@@ -2,6 +2,8 @@ QT += core gui widgets svgwidgets network websockets
 
 CONFIG += c++23
 QMAKE_CXXFLAGS += -std=c++2b -Wno-multichar
+QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Werror
+MAKEFILE = QMakefile
 
 #qnx: target.path = /tmp/$${TARGET}/bin
 #else: unix:!android: target.path = /opt/$${TARGET}/bin

@@ -4,13 +4,13 @@ void Authorizer::InputField::setupUI()
 {
     widget = new QWidget(parent);
     layout   = new QGridLayout(widget);
-    username = new NoNewLineQLineEdit(tr("Username goes here,"));
-    password = new NoNewLineQLineEdit(tr("Password - here..."), true);
-    submitBG = new QSvgWidget(":/resources/LoginBN.svg");
+    username = new NoNewLineQLineEdit(tr("Username goes here,"), parent);
+    password = new NoNewLineQLineEdit(tr("Password - here..."), true, parent);
+    submitBG = new QSvgWidget(":/resources/LoginBN.svg", parent);
     submit = new QPushButton(tr("Log in"), submitBG);
-    topLabel = new QLabel(tr("Login"));
-    showPw = new QCheckBox();
-    showPwLabel = new QLabel(tr("show password"));
+    topLabel = new QLabel(tr("Login"), parent);
+    showPw = new QCheckBox(parent);
+    showPwLabel = new QLabel(tr("show password"), parent);
 
     QHBoxLayout* submitLayout = new QHBoxLayout(submitBG);
     submitLayout->setContentsMargins(0, 0, 0, 0);
@@ -73,7 +73,17 @@ void Authorizer::InputField::reposition(QRect parentGeometry)
 }
 Authorizer::InputField::~InputField()
 {
+    delete layout;
     delete widget;
+    delete username;
+    delete password;
+    delete submitBG;
+    delete submit;
+    delete topLabel;
+    delete showPwLabel;
+    delete showPw;
+    if (errorMsg)
+        delete errorMsg;
 }
 
 
@@ -144,8 +154,10 @@ void Authorizer::parseResponse(QNetworkReply* response)
 #ifdef QT_DEBUG
         USER_PROPERTIES.accessToken = "test_token";
         USER_PROPERTIES.userID = 'TEST';
-        if(field->username->text() == "test")
+        if (field->username->text() == "test") {
+            delete field;
             emit successfullyAuthorized();
+        }
 #endif
 #ifndef GIGAQT_AUTH_PARSE_TEST
         return;
@@ -187,6 +199,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
         USER_PROPERTIES.userID = getJsonSafe<qint64>("id", data).value_or(-1);
         USER_PROPERTIES.username = getJsonSafe<QString>("username", data).value_or("");
         DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
+        delete field;
         emit successfullyAuthorized();
         return std::nullopt;
     });
@@ -202,9 +215,8 @@ void Authorizer::failedAuth(QString context)
         temp->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         temp->setStyleSheet("color: red; font: bold 12pt");
         field->layout->addWidget(temp, 9, 0, 1, 4);
-        field->errorMsg = temp; //i'm lazy
+        field->errorMsg = temp;
     }
-
 textset:
     field->errorMsg->setText(context);
     field->username->setFocus();

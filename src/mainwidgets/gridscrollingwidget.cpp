@@ -1,6 +1,7 @@
 #include "gridscrollingwidget.h"
 
-GridScrollingWidget::GridScrollingWidget()
+GridScrollingWidget::GridScrollingWidget(QWidget* parent)
+    : QAbstractScrollArea{parent}
 {
     
 }

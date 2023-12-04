@@ -82,7 +82,7 @@ public:
     void setupUI();
     void setupLayout();
     void setupConnections();
-    explicit ScrollingWidget();
+    explicit ScrollingWidget(QWidget* parent);
     ~ScrollingWidget();
 
 public slots:

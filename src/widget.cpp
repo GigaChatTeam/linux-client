@@ -61,7 +61,7 @@ void Widget::constructUI()
     if (this->layout() != nullptr) std::terminate();
 
     eventsAndUILayout = new QHBoxLayout(this);
-    UI = new UserInterface(/*this*/);
+    UI = new UserInterface();
     recentEvents = new QListWidget();
     eventsAndUILayout->addWidget(recentEvents, 1);
     eventsAndUILayout->addWidget(UI, 9);
@@ -125,8 +125,8 @@ void Widget::keyPressEvent(QKeyEvent *e)
 
 void Widget::onAuthentication()
 {
-    delete please_resize_authorizer; please_resize_authorizer = nullptr;
-    delete helloScreen; helloScreen = nullptr;
+    DELETEPTR(please_resize_authorizer);
+    DELETEPTR(helloScreen);	
 
     constructUI();
 }
@@ -143,10 +143,8 @@ void Widget::addRecentEvents(QList<RecentEvent *> REList)
 
 void Widget::requireReauth()
 {
-    if (eventsAndUILayout) delete eventsAndUILayout;
-    eventsAndUILayout = nullptr; //outside of "if" because this does not matter
-
+    deleteLayoutWidgets(eventsAndUILayout);    
+    if (eventsAndUILayout) DELETEPTR(eventsAndUILayout); 
     newAuthorizer();
-
 }
 
