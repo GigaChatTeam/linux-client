@@ -47,9 +47,14 @@ int main(int argc, char *argv[])
         {
             SERVERS.hlbServer = argv[++i];
         }
+        if (!std::strcmp(argv[i], "--token-server"))
+        {
+            SERVERS.tokengenServer = argv[++i];
+        }
     }
 
     Widget w;
     w.show();
-    return a.exec();
+    int status_code = a.exec();
+    return status_code;
 }

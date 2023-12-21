@@ -51,29 +51,34 @@ void Widget::setupConnections()
     {
         connect(helloScreen, &Authorizer::successfullyAuthorized,
                 this, &Widget::onAuthentication,
-                Qt::DirectConnection);
+                Qt::AutoConnection);
     }
 }
 
 void Widget::constructUI()
 {
     // Authorizer presense check must done beforehand
-    if (this->layout() != nullptr) std::terminate();
+    if (this->layout() != nullptr) {
+        DEBUG(__PRETTY_FUNCTION__ << " HAS CRASHED THE PROGRAM");
+        std::terminate();
+    }
 
     eventsAndUILayout = new QHBoxLayout(this);
     UI = new UserInterface();
-    recentEvents = new QListWidget();
+    recentEvents = new QListWidget(this);
     eventsAndUILayout->addWidget(recentEvents, 1);
     eventsAndUILayout->addWidget(UI, 9);
+    RTCDPreauth = new QNetworkAccessManager(this);
 
     serverConnection_p = qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection;
+
         // must be initialized after UserInterface
         // obviously
         // didn't spend 5 hours trying to figure out this segfault
 
-    setupConnections();
 
-    DEBUG(__PRETTY_FUNCTION__);
+    // this is a memorial to the segfault that was so dumb that i almost threw myself out of the window on 24th floor
+    //setupConnections();
     openWebsocket();
 }
 
@@ -83,11 +88,29 @@ void Widget::newAuthorizer()
     if (this->layout() != nullptr) std::terminate();
 
     helloScreen = new Authorizer(/*this*/);
+    setupConnections();
     please_resize_authorizer = new QBoxLayout(QBoxLayout::TopToBottom, this);
     please_resize_authorizer->setContentsMargins(0, 0, 0, 0);
     please_resize_authorizer->addWidget(helloScreen);
 
     setLayout(please_resize_authorizer);
+}
+
+// TODO: RENAME FUNCTIONS
+// THIS FUNCTION ONLY STARTS REQUEST
+void Widget::openWebsocket()
+{
+    DEBUG(__PRETTY_FUNCTION__);
+    // TODO: get 'secret', 'client' and 'key' from CC
+    QString secret = "",
+            client = "",
+            key = "";
+
+    QNetworkRequest re = QNetworkRequest(SERVERS.tokengenServer);
+    QByteArray postData = QString(R"({"secret":"%1","key":"%3"p,"client":"%2"})").arg(secret, client, key).toUtf8();
+    connect(RTCDPreauth, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTokenGet(QNetworkReply*)));
+    RTCDPreauth->post(re, postData);
+    // wait until the token and secret are received
 }
 
 Widget::Widget(QWidget *parent)
@@ -122,15 +145,15 @@ void Widget::keyPressEvent(QKeyEvent *e)
 
     QWidget::keyPressEvent(e);
 }
-
 void Widget::onAuthentication()
 {
+    // DEBUG( "\e[1;91m" <<__PRETTY_FUNCTION__ << "\e[0m");
+    disconnect(helloScreen);
     DELETEPTR(please_resize_authorizer);
     DELETEPTR(helloScreen);	
 
     constructUI();
 }
-
 void Widget::addRecentEvents(QList<RecentEvent *> REList)
 {
     foreach(RecentEvent* re, REList)
@@ -140,11 +163,37 @@ void Widget::addRecentEvents(QList<RecentEvent *> REList)
         recentEvents->setItemWidget(item, re);
     }
 }
-
 void Widget::requireReauth()
 {
     deleteLayoutWidgets(eventsAndUILayout);    
-    if (eventsAndUILayout) DELETEPTR(eventsAndUILayout); 
+    if (eventsAndUILayout) DELETEPTR(eventsAndUILayout);
     newAuthorizer();
+}
+void Widget::onTokenGet(QNetworkReply *re)
+{
+    DEBUG(__PRETTY_FUNCTION__);
+    QJsonObject jsonData = QJsonDocument::fromJson(re->readAll()).object();
+
+    DEBUG(jsonData);
+    
+    auto a1 = getJsonSafe<QString>("a1", jsonData);
+    auto a2 = getJsonSafe<QString>("a2", jsonData);
+    auto a3 = getJsonSafe<QString>("a3", jsonData);
+
+    if (!a1 || !a2 || !a3) {
+        qInfo() << "\e[91m" << "ERROR IN FUNCTION" << __PRETTY_FUNCTION__
+                << ": BAD JSON\e[0m";
+        return; // TODO: HANDLE
+    }
+    DEBUG( 1 << __PRETTY_FUNCTION__);;
+    QUrl url =
+        SERVERS.cdnServer +
+        QString("/?id=%0&token=%1").arg(
+            QString::number(USER_PROPERTIES.userID),
+            USER_PROPERTIES.accessToken
+        );
+    DEBUG( 2 << __PRETTY_FUNCTION__);;
+    serverConnection_p->open(url);
+    DEBUG(__PRETTY_FUNCTION__ << serverConnection_p->resourceName());
 }
 

@@ -73,24 +73,25 @@ void Authorizer::InputField::reposition(QRect parentGeometry)
 }
 Authorizer::InputField::~InputField()
 {
-    delete layout;
+    DEBUG(__PRETTY_FUNCTION__);
     delete widget;
-    delete username;
-    delete password;
-    delete submitBG;
-    delete submit;
-    delete topLabel;
-    delete showPwLabel;
-    delete showPw;
-    if (errorMsg)
-        delete errorMsg;
+    // delete layout;
+    // delete username;
+    // delete password;
+    // delete submitBG;
+    // delete submit;
+    // delete topLabel;
+    // delete showPwLabel;
+    // delete showPw;
+    // if (errorMsg) delete errorMsg;
 }
 
 
 Authorizer::Authorizer(QWidget *parent)
     : QSvgWidget{parent}
 {
-    mgr.setTransferTimeout(1000); //5 seconds. may be changed later.
+    mgr = new QNetworkAccessManager(this);
+    // mgr->setTransferTimeout(10000); // 10 seconds. may be changed later.
 
     setMinimumSize(666, 420);
     load(BGImagePath);
@@ -101,7 +102,7 @@ Authorizer::Authorizer(QWidget *parent)
     welcomeBack->setStyleSheet(StyleSheets::LabelSS);
     welcomeBack->setMargin(30);
 
-    connect(&mgr, &QNetworkAccessManager::finished,
+    connect(mgr, &QNetworkAccessManager::finished,
             this, &Authorizer::parseResponse,
             Qt::DirectConnection);
 }
@@ -135,7 +136,8 @@ void Authorizer::sendLoginRequest()
     DEBUG("POST REQUEST: " << requestData);
 
     QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + "/auth"));
-    mgr.post(authRequest, requestData.toUtf8());
+    // authRequest.setHeader(QNetworkRequest::ContentTypeHeader, "text/html"); // TODO: ADD HEADER
+    mgr->post(authRequest, requestData.toUtf8());
 }
 void Authorizer::parseResponse(QNetworkReply* response)
 {
@@ -201,8 +203,11 @@ void Authorizer::parseResponse(QNetworkReply* response)
         DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
         delete field;
         emit successfullyAuthorized();
+        DEBUG("EMITTED SuccessfullyAuthorized()");
         return std::nullopt;
     });
+
+    DEBUG(__LINE__ << " | " << __FUNCTION__);
 }
 void Authorizer::failedAuth(QString context)
 {

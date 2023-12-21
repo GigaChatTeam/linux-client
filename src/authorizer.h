@@ -78,7 +78,7 @@ private:
         QLabel* errorMsg = nullptr;
     };
 
-    QNetworkAccessManager mgr;
+    QNetworkAccessManager *mgr;
 
     QLabel* welcomeBack;
 

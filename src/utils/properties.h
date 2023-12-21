@@ -19,7 +19,8 @@ typedef struct {
 typedef struct {
     QString loginServer,
             cdnServer,
-            hlbServer;
+            hlbServer,
+            tokengenServer;
 } SERVERS_T;
 
 typedef struct {

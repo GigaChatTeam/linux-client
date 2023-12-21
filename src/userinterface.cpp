@@ -20,6 +20,7 @@ void UserInterface::constructTabWidget()
 
 UserInterface::UserInterface(QWidget *parent) : QTabWidget{parent}
 {
+    DEBUG(__PRETTY_FUNCTION__);
     constructWindowArray();
     constructTabWidget();
 }

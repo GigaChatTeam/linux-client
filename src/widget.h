@@ -22,7 +22,9 @@
 #include <QFile>
 #include <QString>
 #include <QWebSocket>
-
+// #include <QNetworkAccessManager>
+// #include <QNetworkRequest>
+// #include <QNetworkReply>
 
 class Widget : public QWidget
 {
@@ -48,21 +50,12 @@ private:
 
     void newAuthorizer();
 
-    inline void openWebsocket() {
-        DEBUG(__PRETTY_FUNCTION__);
-        QUrl url =
-            SERVERS.cdnServer +
-            QString("/?id=%0&token=%1").arg(
-                QString::number(USER_PROPERTIES.userID),
-                USER_PROPERTIES.accessToken
-            );
-        serverConnection_p->open(url);
-        DEBUG(__PRETTY_FUNCTION__ << serverConnection_p->resourceName());
-    }
+    void openWebsocket();
 
 public:
 
     QWebSocket* serverConnection_p;
+    QNetworkAccessManager* RTCDPreauth;
 
     Widget(QWidget *parent = nullptr);
     ~Widget();
@@ -74,6 +67,7 @@ public slots:
     void onAuthentication();
     void addRecentEvents(QList<RecentEvent*> REList);
     void requireReauth();
+    void onTokenGet(QNetworkReply* re);
 
 };
 #endif // WIDGET_H
