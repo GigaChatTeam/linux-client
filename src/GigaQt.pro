@@ -17,6 +17,8 @@ BIN_DIR = $$INSTALL_ROOT/bin
 release: SHARE_DIR = $$INSTALL_ROOT/share/$${TARGET}
 debug: SHARE_DIR = "/home/main/coding/linux-client/build/Debug/share/$${TARGET}"
 
+INCLUDEPATH += ../database/include
+
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \
 #       GIGAQT_AUTH_PARSE_TEST \
@@ -38,6 +40,7 @@ SOURCES += \
 	utils/nonewlineqlineedit.cpp \
 	utils/properties.cpp \
 	utils/recentevent.cpp \
+	database/wrappers.cpp \
 	widget.cpp
 
 HEADERS += \
@@ -54,6 +57,7 @@ HEADERS += \
 	utils/nonewlineqlineedit.h \
 	utils/properties.h \
 	utils/recentevent.h \
+	database/wrappers.h \
 	widget.h
 
 target.path = $$BIN_DIR

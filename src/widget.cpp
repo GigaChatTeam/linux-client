@@ -159,7 +159,7 @@ void Widget::onTokenGet(QNetworkReply *re)
         qInfo().nospace() << "\e[91mERROR IN FUNCTION " << __PRETTY_FUNCTION__ << ": BAD JSON\e[0m";
         return;
     }
-    QUrl url = SERVERS.cdnServer + QString("/%0/%1").arg(TOKEN_PARTS.UID, temp_token);
+    QUrl url = SERVERS.cdnServer + QString("/%0/%1").arg(TOKEN_PARTS.UID, temp_token.value());
     serverConnection_p->open(url);
 }
 
