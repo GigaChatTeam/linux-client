@@ -142,8 +142,6 @@ void Widget::keyPressEvent(QKeyEvent *e)
 }
 void Widget::onAuthentication()
 {
-    // DEBUG( "\e[1;91m" <<__PRETTY_FUNCTION__ << "\e[0m");
-    // disconnect(helloScreen);
     delete please_resize_authorizer;
     please_resize_authorizer = nullptr;
     helloScreen->deleteLater();
