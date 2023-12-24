@@ -93,6 +93,7 @@ protected:
 
 public:
     explicit Authorizer(QWidget* parent = nullptr);
+    ~Authorizer();
     static bool onlyWhitespaces(const QString &&str);
 
 signals:

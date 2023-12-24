@@ -57,13 +57,8 @@ void Widget::setupConnections()
 
 void Widget::constructUI()
 {
-    // Authorizer presense check must done beforehand
-    if (this->layout() != nullptr) {
-        DEBUG(__PRETTY_FUNCTION__ << " HAS CRASHED THE PROGRAM");
-        std::terminate();
-    }
-
-    eventsAndUILayout = new QHBoxLayout(this);
+    DEBUG(__PRETTY_FUNCTION__);
+    eventsAndUILayout = new QHBoxLayout(this); // !!!!!!!!!!!!!!!!!!!!
     UI = new UserInterface();
     recentEvents = new QListWidget(this);
     eventsAndUILayout->addWidget(recentEvents, 1);
@@ -84,16 +79,11 @@ void Widget::constructUI()
 
 void Widget::newAuthorizer()
 {
-    // UI presense check must done beforehand
-    if (this->layout() != nullptr) std::terminate();
-
     helloScreen = new Authorizer(/*this*/);
     setupConnections();
     please_resize_authorizer = new QBoxLayout(QBoxLayout::TopToBottom, this);
     please_resize_authorizer->setContentsMargins(0, 0, 0, 0);
     please_resize_authorizer->addWidget(helloScreen);
-
-    setLayout(please_resize_authorizer);
 }
 
 // TODO: RENAME FUNCTIONS
@@ -102,6 +92,11 @@ void Widget::openWebsocket()
 {
     DEBUG(__PRETTY_FUNCTION__);
     // TODO: get 'secret', 'client' and 'key' from CC
+    /// user.1.5d31654918b943891e05387d0e22b3b3ad7fe05a2e0d8bbd87131b49ca72bb6af44df17b._p1CdoStvml60QWnCHFy1OsQkl9_sySm8H9qo49eSEH2Bnzv
+    /// in this string:
+    /// 1: client
+    /// 5d31654918b943891e05387d0e22b3b3ad7fe05a2e0d8bbd87131b49ca72bb6af44df17b: secret
+    /// _p1CdoStvml60QWnCHFy1OsQkl9_sySm8H9qo49eSEH2Bnzv: key
     QString secret = "",
             client = "",
             key = "";
@@ -148,9 +143,10 @@ void Widget::keyPressEvent(QKeyEvent *e)
 void Widget::onAuthentication()
 {
     // DEBUG( "\e[1;91m" <<__PRETTY_FUNCTION__ << "\e[0m");
-    disconnect(helloScreen);
-    DELETEPTR(please_resize_authorizer);
-    DELETEPTR(helloScreen);	
+    // disconnect(helloScreen);
+    delete please_resize_authorizer;
+    please_resize_authorizer = nullptr;
+    helloScreen->deleteLater();
 
     constructUI();
 }
@@ -165,8 +161,9 @@ void Widget::addRecentEvents(QList<RecentEvent *> REList)
 }
 void Widget::requireReauth()
 {
-    deleteLayoutWidgets(eventsAndUILayout);    
-    if (eventsAndUILayout) DELETEPTR(eventsAndUILayout);
+    deleteLayoutWidgets(eventsAndUILayout);
+    delete eventsAndUILayout;
+    eventsAndUILayout = nullptr;
     newAuthorizer();
 }
 void Widget::onTokenGet(QNetworkReply *re)

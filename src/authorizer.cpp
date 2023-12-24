@@ -107,6 +107,11 @@ Authorizer::Authorizer(QWidget *parent)
             Qt::DirectConnection);
 }
 
+Authorizer::~Authorizer()
+{
+    DEBUG(__PRETTY_FUNCTION__);
+}
+
 bool Authorizer::onlyWhitespaces(const QString &&str)
 {
     QString temp = str;

@@ -10,8 +10,7 @@
 #include <QHash>
 
 #include <optional>
-#define DELETEPTR(pointer) do { delete pointer; pointer = 0; } while(0)
-
+#define DELETEPTR(pointer) do { delete pointer; pointer = nullptr; } while(0)
 
 QString getDateF();
 
