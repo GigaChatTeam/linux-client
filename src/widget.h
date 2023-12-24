@@ -21,6 +21,8 @@
 
 #include <QFile>
 #include <QString>
+#include <QByteArray>
+#include <QList>
 #include <QWebSocket>
 // #include <QNetworkAccessManager>
 // #include <QNetworkRequest>

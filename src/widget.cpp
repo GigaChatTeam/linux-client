@@ -42,7 +42,7 @@ bool Widget::tokenIsPresent()
 
     bool ID_valid;
     USER_PROPERTIES.userID = id.toLongLong(&ID_valid);
-    USER_PROPERTIES.accessToken = token.toUtf8().data();
+    USER_PROPERTIES.token = token.toUtf8().data();
     return ID_valid;
 }
 void Widget::setupConnections()
@@ -81,20 +81,13 @@ void Widget::newAuthorizer()
 // THIS FUNCTION ONLY STARTS REQUEST
 void Widget::openWebsocket()
 {
-    // TODO: get 'secret', 'client' and 'key' from CC
-    /// user.1.5d31654918b943891e05387d0e22b3b3ad7fe05a2e0d8bbd87131b49ca72bb6af44df17b._p1CdoStvml60QWnCHFy1OsQkl9_sySm8H9qo49eSEH2Bnzv
-    /// in this string:
-    /// 1: client
-    /// 5d31654918b943891e05387d0e22b3b3ad7fe05a2e0d8bbd87131b49ca72bb6af44df17b: secret
-    /// _p1CdoStvml60QWnCHFy1OsQkl9_sySm8H9qo49eSEH2Bnzv: key
-    QString secret = "",
-            client = "",
-            key = "";
 
     QNetworkRequest re = QNetworkRequest(SERVERS.tokengenServer);
-    QByteArray postData = QString(R"({"secret":"%1","key":"%3"p,"client":"%2"})").arg(secret, client, key).toUtf8();
+    QByteArray postData = QString(R"({"secret":"%1","key":"%2","client":%3})")
+                            .arg(TOKEN_PARTS.secret, TOKEN_PARTS.key, TOKEN_PARTS.UID).toUtf8();
     connect(RTCDPreauth, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTokenGet(QNetworkReply*)));
     RTCDPreauth->post(re, postData);
+    qInfo().noquote() << postData;
 }
 
 Widget::Widget(QWidget *parent)
@@ -153,23 +146,20 @@ void Widget::requireReauth()
 }
 void Widget::onTokenGet(QNetworkReply *re)
 {
+    disconnect(RTCDPreauth);
+
     QJsonObject jsonData = QJsonDocument::fromJson(re->readAll()).object();
     
-    auto a1 = getJsonSafe<QString>("a1", jsonData);
-    auto a2 = getJsonSafe<QString>("a2", jsonData);
-    auto a3 = getJsonSafe<QString>("a3", jsonData);
+    DEBUG(jsonData);
 
-    if (!a1 || !a2 || !a3) {
-        qInfo() << "\e[91m" << "ERROR IN FUNCTION" << __PRETTY_FUNCTION__
-                << ": BAD JSON\e[0m";
-        return; // TODO: HANDLE
+    auto status = getJsonSafe<QString>("status", jsonData);
+    auto temp_token = getJsonSafe<QString>("token", jsonData);
+
+    if (!status || !temp_token) {
+        qInfo().nospace() << "\e[91mERROR IN FUNCTION " << __PRETTY_FUNCTION__ << ": BAD JSON\e[0m";
+        return;
     }
-    QUrl url =
-        SERVERS.cdnServer +
-        QString("/?id=%0&token=%1").arg(
-            QString::number(USER_PROPERTIES.userID),
-            USER_PROPERTIES.accessToken
-        );
+    QUrl url = SERVERS.cdnServer + QString("/%0/%1").arg(TOKEN_PARTS.UID, temp_token);
     serverConnection_p->open(url);
 }
 

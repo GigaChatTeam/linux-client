@@ -9,12 +9,18 @@
 // may result in data initialization faliure
 // TODO: reconsider life choices
 typedef struct {
-    QByteArray accessToken;
+    QByteArray token;
     qint64 userID;
     std::vector<qint64> activeChannels,
                         passiveChannels;
     QString username;
 } USER_PROPERTIES_T;
+
+typedef struct {
+    QByteArray UID;
+    QByteArray secret;
+    QByteArray key;
+} TOKEN_PARTS_T;
 
 typedef struct {
     QString loginServer,
@@ -32,3 +38,4 @@ typedef struct {
 extern USER_PROPERTIES_T USER_PROPERTIES;
 extern SERVERS_T SERVERS;
 extern FILEPATHS_T FILEPATHS;
+extern TOKEN_PARTS_T TOKEN_PARTS;

@@ -149,7 +149,7 @@ void Authorizer::parseResponse(QNetworkReply* response)
         failedAuth(error.arg(QString::number(response->error()), response->errorString()));
 
 #ifdef QT_DEBUG
-        USER_PROPERTIES.accessToken = "test_token";
+        USER_PROPERTIES.token = "test_token";
         USER_PROPERTIES.userID = 'TEST';
         if (field->username->text() == "test") {
             delete field;
@@ -162,8 +162,6 @@ void Authorizer::parseResponse(QNetworkReply* response)
     jsonEscapeString.replace("\\", 1, "", 0); // I cant't fucking believe that this line of code cost me 7 fukcing hours
     QJsonObject respJson = QJsonDocument::fromJson(jsonEscapeString).object();
 
-    DEBUG("\e[1;93m" << jsonEscapeString << "\e[0m");
-
     getJsonSafe<QJsonObject>("data", respJson)
     .or_else([&respJson, this] -> std::optional<QJsonObject> { // shut up qtcreator, this is valid syntax in C++23
         failedAuth(QString("Error: ") + getJsonSafe<QString>("description", respJson)
@@ -171,13 +169,16 @@ void Authorizer::parseResponse(QNetworkReply* response)
         return std::nullopt;
     })
     .and_then([&response, this](QJsonObject data) -> std::optional<QJsonObject>{
-        USER_PROPERTIES.accessToken = getJsonSafe<QString>("token", data)
+        USER_PROPERTIES.token = getJsonSafe<QString>("token", data)
             .transform([](QString maybe_value){
                 return maybe_value.toUtf8();
             }).value_or(QByteArray());
         USER_PROPERTIES.userID = getJsonSafe<qint64>("id", data).value_or(-1);
         USER_PROPERTIES.username = getJsonSafe<QString>("username", data).value_or("");
-        DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
+        QList<QByteArray> tmp = USER_PROPERTIES.token.split('.');
+        TOKEN_PARTS.UID = tmp.at(1);
+        TOKEN_PARTS.secret = tmp.at(2);
+        TOKEN_PARTS.key = tmp.at(3);
         delete field;
         emit successfullyAuthorized();
         return std::nullopt;
