@@ -57,8 +57,7 @@ void Widget::setupConnections()
 
 void Widget::constructUI()
 {
-    DEBUG(__PRETTY_FUNCTION__);
-    eventsAndUILayout = new QHBoxLayout(this); // !!!!!!!!!!!!!!!!!!!!
+    eventsAndUILayout = new QHBoxLayout(this);
     UI = new UserInterface();
     recentEvents = new QListWidget(this);
     eventsAndUILayout->addWidget(recentEvents, 1);
@@ -66,20 +65,12 @@ void Widget::constructUI()
     RTCDPreauth = new QNetworkAccessManager(this);
 
     serverConnection_p = qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection;
-
-        // must be initialized after UserInterface
-        // obviously
-        // didn't spend 5 hours trying to figure out this segfault
-
-
-    // this is a memorial to the segfault that was so dumb that i almost threw myself out of the window on 24th floor
-    //setupConnections();
     openWebsocket();
 }
 
 void Widget::newAuthorizer()
 {
-    helloScreen = new Authorizer(/*this*/);
+    helloScreen = new Authorizer();
     setupConnections();
     please_resize_authorizer = new QBoxLayout(QBoxLayout::TopToBottom, this);
     please_resize_authorizer->setContentsMargins(0, 0, 0, 0);
@@ -90,7 +81,6 @@ void Widget::newAuthorizer()
 // THIS FUNCTION ONLY STARTS REQUEST
 void Widget::openWebsocket()
 {
-    DEBUG(__PRETTY_FUNCTION__);
     // TODO: get 'secret', 'client' and 'key' from CC
     /// user.1.5d31654918b943891e05387d0e22b3b3ad7fe05a2e0d8bbd87131b49ca72bb6af44df17b._p1CdoStvml60QWnCHFy1OsQkl9_sySm8H9qo49eSEH2Bnzv
     /// in this string:
@@ -105,7 +95,6 @@ void Widget::openWebsocket()
     QByteArray postData = QString(R"({"secret":"%1","key":"%3"p,"client":"%2"})").arg(secret, client, key).toUtf8();
     connect(RTCDPreauth, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTokenGet(QNetworkReply*)));
     RTCDPreauth->post(re, postData);
-    // wait until the token and secret are received
 }
 
 Widget::Widget(QWidget *parent)
@@ -121,15 +110,13 @@ Widget::~Widget()
 
 void Widget::keyPressEvent(QKeyEvent *e)
 {
-#ifdef QT_DEBUG // obviously, for debugging purposes
+#ifdef QT_DEBUG
     if (e->key() == Qt::Key_K && e->modifiers() == Qt::ControlModifier)
     {   // switch between authorization screens
         if (please_resize_authorizer) {
             onAuthentication();
-            qDebug() << "killing authorizer\n";
         } else if (eventsAndUILayout) {
             requireReauth();
-            qDebug() << "killing killing UI\n";
         } else {
             std::terminate();
         }
@@ -166,10 +153,7 @@ void Widget::requireReauth()
 }
 void Widget::onTokenGet(QNetworkReply *re)
 {
-    DEBUG(__PRETTY_FUNCTION__);
     QJsonObject jsonData = QJsonDocument::fromJson(re->readAll()).object();
-
-    DEBUG(jsonData);
     
     auto a1 = getJsonSafe<QString>("a1", jsonData);
     auto a2 = getJsonSafe<QString>("a2", jsonData);
@@ -180,15 +164,12 @@ void Widget::onTokenGet(QNetworkReply *re)
                 << ": BAD JSON\e[0m";
         return; // TODO: HANDLE
     }
-    DEBUG( 1 << __PRETTY_FUNCTION__);;
     QUrl url =
         SERVERS.cdnServer +
         QString("/?id=%0&token=%1").arg(
             QString::number(USER_PROPERTIES.userID),
             USER_PROPERTIES.accessToken
         );
-    DEBUG( 2 << __PRETTY_FUNCTION__);;
     serverConnection_p->open(url);
-    DEBUG(__PRETTY_FUNCTION__ << serverConnection_p->resourceName());
 }
 

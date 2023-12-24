@@ -2,7 +2,6 @@
 
 #include <QObject>
 
-//stdc++
 #include <optional>
 #ifdef QT_DEBUG
     #include <iostream>
@@ -93,7 +92,6 @@ protected:
 
 public:
     explicit Authorizer(QWidget* parent = nullptr);
-    ~Authorizer();
     static bool onlyWhitespaces(const QString &&str);
 
 signals:

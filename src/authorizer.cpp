@@ -73,7 +73,6 @@ void Authorizer::InputField::reposition(QRect parentGeometry)
 }
 Authorizer::InputField::~InputField()
 {
-    DEBUG(__PRETTY_FUNCTION__);
     delete widget;
     // delete layout;
     // delete username;
@@ -91,7 +90,6 @@ Authorizer::Authorizer(QWidget *parent)
     : QSvgWidget{parent}
 {
     mgr = new QNetworkAccessManager(this);
-    // mgr->setTransferTimeout(10000); // 10 seconds. may be changed later.
 
     setMinimumSize(666, 420);
     load(BGImagePath);
@@ -105,11 +103,6 @@ Authorizer::Authorizer(QWidget *parent)
     connect(mgr, &QNetworkAccessManager::finished,
             this, &Authorizer::parseResponse,
             Qt::DirectConnection);
-}
-
-Authorizer::~Authorizer()
-{
-    DEBUG(__PRETTY_FUNCTION__);
 }
 
 bool Authorizer::onlyWhitespaces(const QString &&str)
@@ -138,10 +131,7 @@ void Authorizer::sendLoginRequest()
     QString requestData = QString("username=%1&password=%2")
                               .arg(field->username->text(), field->password->text());
 
-    DEBUG("POST REQUEST: " << requestData);
-
     QNetworkRequest authRequest = QNetworkRequest(QUrl(SERVERS.loginServer + "/auth"));
-    // authRequest.setHeader(QNetworkRequest::ContentTypeHeader, "text/html"); // TODO: ADD HEADER
     mgr->post(authRequest, requestData.toUtf8());
 }
 void Authorizer::parseResponse(QNetworkReply* response)
@@ -151,9 +141,9 @@ void Authorizer::parseResponse(QNetworkReply* response)
 
     if(response->error() != QNetworkReply::NoError)
     {
-        DEBUG( "\e[1;33;40mNETWORK ERROR RECIEVED:"
-                 << response->error()
-                 << "\e[0m" );
+        qInfo() << "\e[1;33;40mNETWORK ERROR RECIEVED:"
+                << response->error()
+                << "\e[0m";
         QString error = tr("Login request failed:\n"
                            "Error code: %1\n%2");
         failedAuth(error.arg(QString::number(response->error()), response->errorString()));
@@ -165,8 +155,6 @@ void Authorizer::parseResponse(QNetworkReply* response)
             delete field;
             emit successfullyAuthorized();
         }
-#endif
-#ifndef GIGAQT_AUTH_PARSE_TEST
         return;
 #endif
     }
@@ -174,31 +162,15 @@ void Authorizer::parseResponse(QNetworkReply* response)
     jsonEscapeString.replace("\\", 1, "", 0); // I cant't fucking believe that this line of code cost me 7 fukcing hours
     QJsonObject respJson = QJsonDocument::fromJson(jsonEscapeString).object();
 
-
-    //not cutting out of the source just to remember all the suffering
-#ifdef GIGAQT_AUTH_PARSE_TEST
-    QByteArray __success_ex__ = "{\"auth-data\":{\"AAAA\": true}}",
-               __fail_ex__ = "{\"status\": \"Refused\", \"reason\": \"BadRequest\", \"description\": \"UserNotFound\"}";
-    respJson = QJsonDocument::fromJson(
-                   __success_ex__
-                   //__fail_ex__
-                   ).object();
-#endif
-
-
     DEBUG("\e[1;93m" << jsonEscapeString << "\e[0m");
-    DEBUG(getJsonSafe<QJsonObject>("auth-data", respJson).has_value() << respJson["auth-data"].toObject());
 
-    // MONADSSS YESSS
     getJsonSafe<QJsonObject>("data", respJson)
     .or_else([&respJson, this] -> std::optional<QJsonObject> { // shut up qtcreator, this is valid syntax in C++23
-        DEBUG("OR_ELSE TRIGGERED: " << __PRETTY_FUNCTION__);
         failedAuth(QString("Error: ") + getJsonSafe<QString>("description", respJson)
            .value_or("Unresolved JSON error"));
         return std::nullopt;
     })
     .and_then([&response, this](QJsonObject data) -> std::optional<QJsonObject>{
-        DEBUG("AND_THEN TRIGGERED: " << __PRETTY_FUNCTION__);
         USER_PROPERTIES.accessToken = getJsonSafe<QString>("token", data)
             .transform([](QString maybe_value){
                 return maybe_value.toUtf8();
@@ -208,11 +180,8 @@ void Authorizer::parseResponse(QNetworkReply* response)
         DEBUG("token: " << USER_PROPERTIES.accessToken << Qt::endl << "ID: " << USER_PROPERTIES.userID);
         delete field;
         emit successfullyAuthorized();
-        DEBUG("EMITTED SuccessfullyAuthorized()");
         return std::nullopt;
     });
-
-    DEBUG(__LINE__ << " | " << __FUNCTION__);
 }
 void Authorizer::failedAuth(QString context)
 {
