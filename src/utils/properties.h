@@ -6,8 +6,6 @@
 #include <QByteArray>
 #include <QUrl>
 
-// may result in data initialization faliure
-// TODO: reconsider life choices
 typedef struct {
     QByteArray token;
     qint64 userID;
@@ -35,7 +33,21 @@ typedef struct {
             db;
 } FILEPATHS_T;
 
-extern USER_PROPERTIES_T USER_PROPERTIES;
-extern SERVERS_T SERVERS;
-extern FILEPATHS_T FILEPATHS;
-extern TOKEN_PARTS_T TOKEN_PARTS;
+
+inline SERVERS_T SERVERS {"https://ru.gigacht.com", "wss://ru.gigacht.com", "https://???.com", ""};
+inline FILEPATHS_T FILEPATHS;
+inline TOKEN_PARTS_T TOKEN_PARTS;
+inline USER_PROPERTIES_T USER_PROPERTIES
+#ifdef QT_DEBUG
+        {
+            .token = "user"
+                     ".1"
+                     ".2b05fcb8258766a46792c0673da54f45f36430895fd1e84bc800bf2dcfdad20f773a668e"
+                     ".iRfM87XTe2G0290unVMYWY4C3Vq0k_OHYFdF6B7JfnM-Saqu",
+            .userID = 1,
+            .activeChannels = {},
+            .passiveChannels = {},
+            .username = "justanothercatgirl"
+        }
+#endif
+;

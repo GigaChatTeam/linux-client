@@ -74,15 +74,6 @@ void Authorizer::InputField::reposition(QRect parentGeometry)
 Authorizer::InputField::~InputField()
 {
     delete widget;
-    // delete layout;
-    // delete username;
-    // delete password;
-    // delete submitBG;
-    // delete submit;
-    // delete topLabel;
-    // delete showPwLabel;
-    // delete showPw;
-    // if (errorMsg) delete errorMsg;
 }
 
 
@@ -90,6 +81,9 @@ Authorizer::Authorizer(QWidget *parent)
     : QSvgWidget{parent}
 {
     mgr = new QNetworkAccessManager(this);
+#ifdef QT_DEBUG
+    mgr->setTransferTimeout(1000);
+#endif
 
     setMinimumSize(666, 420);
     load(BGImagePath);
@@ -137,13 +131,13 @@ void Authorizer::sendLoginRequest()
 void Authorizer::parseResponse(QNetworkReply* response)
 {
     QByteArray jsonEscapeString = response->readAll();
-    DEBUG( "DATA RECIEVED:\n\e[1;33;40m" << jsonEscapeString << "\e[0m" );
+    DEBUG( "DATA RECIEVED:\n\x1b[1;33;40m" << jsonEscapeString << "\x1b[0m" );
 
     if(response->error() != QNetworkReply::NoError)
     {
-        qInfo() << "\e[1;33;40mNETWORK ERROR RECIEVED:"
+        qInfo() << "\x1b[1;33;40mNETWORK ERROR RECIEVED:"
                 << response->error()
-                << "\e[0m";
+                << "\x1b[0m";
         QString error = tr("Login request failed:\n"
                            "Error code: %1\n%2");
         failedAuth(error.arg(QString::number(response->error()), response->errorString()));

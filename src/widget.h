@@ -24,9 +24,6 @@
 #include <QByteArray>
 #include <QList>
 #include <QWebSocket>
-// #include <QNetworkAccessManager>
-// #include <QNetworkRequest>
-// #include <QNetworkReply>
 
 class Widget : public QWidget
 {
@@ -52,7 +49,7 @@ private:
 
     void newAuthorizer();
 
-    void openWebsocket();
+    void initializeWSTokenRequest();
 
 public:
 

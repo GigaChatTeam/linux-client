@@ -2,7 +2,8 @@
 
 bool Widget::tokenIsPresent()
 {
-    /*      auth_data File structure:
+    /*
+    *       auth_data File structure:
     *   first string: tokes exists  ( 0 | 1 )
     *   if token exists == 1:
     *       second string: id           (  i64  )
@@ -65,7 +66,7 @@ void Widget::constructUI()
     RTCDPreauth = new QNetworkAccessManager(this);
 
     serverConnection_p = qobject_cast<ScrollingWidget*>(std::get<2>(UI->tabs[0]))->serverConnection;
-    openWebsocket();
+    initializeWSTokenRequest();
 }
 
 void Widget::newAuthorizer()
@@ -77,12 +78,9 @@ void Widget::newAuthorizer()
     please_resize_authorizer->addWidget(helloScreen);
 }
 
-// TODO: RENAME FUNCTIONS
-// THIS FUNCTION ONLY STARTS REQUEST
-void Widget::openWebsocket()
+void Widget::initializeWSTokenRequest()
 {
-
-    QNetworkRequest re = QNetworkRequest(SERVERS.tokengenServer);
+    auto re = QNetworkRequest(SERVERS.tokengenServer);
     QByteArray postData = QString(R"({"secret":"%1","key":"%2","client":%3})")
                             .arg(TOKEN_PARTS.secret, TOKEN_PARTS.key, TOKEN_PARTS.UID).toUtf8();
     connect(RTCDPreauth, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTokenGet(QNetworkReply*)));
@@ -156,7 +154,7 @@ void Widget::onTokenGet(QNetworkReply *re)
     auto temp_token = getJsonSafe<QString>("token", jsonData);
 
     if (!status || !temp_token) {
-        qInfo().nospace() << "\e[91mERROR IN FUNCTION " << __PRETTY_FUNCTION__ << ": BAD JSON\e[0m";
+        qInfo().nospace() << "\x1b[91mERROR IN FUNCTION " << __PRETTY_FUNCTION__ << ": BAD JSON\x1b[0m";
         return;
     }
     QUrl url = SERVERS.cdnServer + QString("/%0/%1").arg(TOKEN_PARTS.UID, temp_token.value());

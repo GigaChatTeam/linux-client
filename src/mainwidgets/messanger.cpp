@@ -31,7 +31,7 @@ void ScrollingWidget::setupConnections()
     connect(serverConnection, SIGNAL(textMessageReceived(QString)), this, SLOT(receiveTextMessage(QString)));
     connect(serverConnection, SIGNAL(aboutToClose()), this, SLOT(errorOccured())); // TODO: DELETE
     connect(serverConnection, &QWebSocket::connected, this, [&](){
-        qDebug() << "\e[1;91mQWEBSOCKER CONNECTED\e[0m";
+        qDebug() << "\x1b[1;91mQWEBSOCKER CONNECTED\x1b[0m";
         DEBUG(__PRETTY_FUNCTION__ << serverConnection->resourceName());
     });
     connect(inputLine, SIGNAL(enterPressed()), this, SLOT(sendTextMessage()));
@@ -49,18 +49,18 @@ ScrollingWidget::ScrollingWidget(QWidget* parent)
 
     lastAddedGroup = new GC::MessageGroup(this, 0, GC::sent, nullptr);
 
-    DEBUG("\e[31m" << SERVERS.cdnServer << "\e[0m");
+    DEBUG("\x1b[31m" << SERVERS.cdnServer << "\x1b[0m");
 }
 
 ScrollingWidget::~ScrollingWidget()
 {
-    DEBUG(__PRETTY_FUNCTION__ << "\e[1;91mDESTRUCTOR CALLED\e[0m");
+    DEBUG(__PRETTY_FUNCTION__ << "\x1b[1;91mDESTRUCTOR CALLED\x1b[0m");
     delete serverConnection;
 }
 
 void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign align)
 {
-    QString sender = _sender >= 0 ? QString::number(_sender): "\e";
+    QString sender = _sender >= 0 ? QString::number(_sender): "\x1b";
     // TODO: IMPLEMENT SENDER NAME LOOKUP (HLB)
 
     GC::Message* currentMessage = new GC::Message(
@@ -95,7 +95,7 @@ void ScrollingWidget::addMessage(QString &text, qint64 _sender, GC::MsgAlign ali
 void ScrollingWidget::errorOccured()
 {
     DEBUG(__PRETTY_FUNCTION__);
-    qInfo() << "\e[36;41m THE SOCKET IS ABOUT TO CLOSE \e[0m";
+    qInfo() << "\x1b[36;41m THE SOCKET IS ABOUT TO CLOSE \x1b[0m";
 }
 
 void ScrollingWidget::receiveTextMessage(QString message)
@@ -106,7 +106,7 @@ void ScrollingWidget::receiveTextMessage(QString message)
     QString contents = msgContents.and_then(
         [](const QJsonObject& contained) -> std::optional<QString> {
             return getJsonSafe<QString>("text", contained);
-        }).value_or("\e");
+        }).value_or("\x1b");
     qint64 author = msgContents.and_then(
         [](const QJsonObject& contained) -> std::optional<qint64> {
             return getJsonSafe<qint64>("author", contained);

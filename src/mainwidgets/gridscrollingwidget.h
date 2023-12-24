@@ -7,6 +7,6 @@ class GridScrollingWidget : public QAbstractScrollArea
 {
     Q_OBJECT
 public:
-    GridScrollingWidget(QWidget* parent);
+    explicit GridScrollingWidget(QWidget* parent);
 };
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QWidget>
 #include <QLabel>
 #include <QIcon>
@@ -23,7 +25,7 @@ class Message : public QFrame
 
     QLabel *sender, *message;
     QHBoxLayout *layout;
-    QVBoxLayout *sender_message;
+    std::unique_ptr<QVBoxLayout> sender_message;
     QIcon *senderPFP,
           *readStatus;
 
@@ -35,7 +37,6 @@ public:
                      bool showAuthor,
                      MsgAlign status,
                      QWidget *parent);
-    ~Message();
 
     void makeUnsent();
     void makeSent();

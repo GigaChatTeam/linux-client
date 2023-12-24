@@ -11,12 +11,12 @@ Message::Message(QString &_sender,
 {
 
     layout = new QHBoxLayout(this);
-    sender_message = new QVBoxLayout();
+    sender_message = std::make_unique<QVBoxLayout>();
 
     if (showAuthor) {
         sender = new QLabel(this);
         sender->setStyleSheet(StyleSheets::MessageSenderSS);
-        if (_sender.at(0) == '\e'){
+        if (_sender.at(0) == '\x1b'){
             _sender = "Could not resolve author";
             sender->setStyleSheet(StyleSheets::MessageErrorSS);
         }
@@ -27,7 +27,7 @@ Message::Message(QString &_sender,
     message = new QLabel(this);
     message->setWordWrap(true);
     message->setStyleSheet(StyleSheets::MessageSS);
-    if (_message.at(0) == '\e'){
+    if (_message.at(0) == '\x1b'){
         _message = "Error receiving a message";
         message->setStyleSheet(StyleSheets::MessageErrorSS);
     }
@@ -38,16 +38,11 @@ Message::Message(QString &_sender,
     sender_message->addWidget(message, 2);
 
 
-    layout->addLayout(sender_message);
+    layout->addLayout(sender_message.get());
     Qt::Alignment alignment = Qt::AlignVCenter | (status == sent ? Qt::AlignRight : Qt::AlignLeft);
     layout->setAlignment(alignment);
     sender_message->setAlignment(alignment);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
-}
-
-Message::~Message()
-{
-    delete sender_message;
 }
 
 void Message::makeUnsent()

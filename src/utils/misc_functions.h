@@ -14,7 +14,7 @@
 
 QString getDateF();
 
-inline void deleteLayoutWidgets(QLayout* p) {
+inline void deleteLayoutWidgets(const QLayout* p) {
     int i = 0;
     QLayoutItem *w;
     while( nullptr != (w = p->itemAt(i)) ) {
