@@ -1,57 +1,62 @@
 #ifndef MISC_FUNCTIONS_H
 #define MISC_FUNCTIONS_H
 
-#include <QtSystemDetection>
 #include <QDateTime>
-#include <QString>
-#include <QWidget>
-#include <QLayout>
 #include <QDebug>
 #include <QHash>
+#include <QLayout>
+#include <QString>
+#include <QWidget>
+#include <QtSystemDetection>
 
 #include <optional>
-#define DELETEPTR(pointer) do { delete pointer; pointer = nullptr; } while(0)
+#define DELETEPTR(pointer)                                                     \
+	do {                                                                   \
+		delete pointer;                                                \
+		pointer = nullptr;                                             \
+	} while (0)
 
 QString getDateF();
 
-inline void deleteLayoutWidgets(const QLayout* p) {
-    int i = 0;
-    QLayoutItem *w;
-    while( nullptr != (w = p->itemAt(i)) ) {
-        if (!w->isEmpty()) delete w->widget();
-    }
+inline void deleteLayoutWidgets(const QLayout *p)
+{
+	int	     i = 0;
+	QLayoutItem *w;
+	while (nullptr != (w = p->itemAt(i))) {
+		if (!w->isEmpty()) delete w->widget();
+	}
 }
 
-
-namespace MessageType {
+namespace MessageType
+{
 
 enum MessageType : unsigned short {
-    // Administration
-    ADMIN_CHANNELS_CREATE,
-    ADMIN_CHANNELS_DELETE,
-    ADMIN_CHANNELS_SETTINGS_EXTERNAL_NAME,
-    ADMIN_CHANNELS_USERS_ADD,
-    ADMIN_CHANNELS_USERS_REMOVE,
-    // Account management
-    USER_CHANNELS_JOIN,
-    USER_CHANNELS_LEAVE,
-    // Communication
-    USER_CHANNELS_MESSAGES_POST_NEW,
-    USER_CHANNELS_MESSAGES_POST_FOWARD_MESSAGE,
-    USER_CHANNELS_MESSAGES_POST_FORWARD_POST,
-    USER_CHANNELS_MESSAGES_EDIT,
-    USER_CHANNELS_MESSAGES_DELETE,
-    USER_CHANNELS_MESSAGES_REACTIONS_ADD,
-    USER_CHANNELS_MESSAGES_REACTIONS_REMOVE,
-    // System
-    SYSTEM_CHANNELS_LISTEN_ADD,
-    SYSTEM_CHANNELS_LISTEN_REMOVE,
+	// Administration
+	ADMIN_CHANNELS_CREATE,
+	ADMIN_CHANNELS_DELETE,
+	ADMIN_CHANNELS_SETTINGS_EXTERNAL_NAME,
+	ADMIN_CHANNELS_USERS_ADD,
+	ADMIN_CHANNELS_USERS_REMOVE,
+	// Account management
+	USER_CHANNELS_JOIN,
+	USER_CHANNELS_LEAVE,
+	// Communication
+	USER_CHANNELS_MESSAGES_POST_NEW,
+	USER_CHANNELS_MESSAGES_POST_FOWARD_MESSAGE,
+	USER_CHANNELS_MESSAGES_POST_FORWARD_POST,
+	USER_CHANNELS_MESSAGES_EDIT,
+	USER_CHANNELS_MESSAGES_DELETE,
+	USER_CHANNELS_MESSAGES_REACTIONS_ADD,
+	USER_CHANNELS_MESSAGES_REACTIONS_REMOVE,
+	// System
+	SYSTEM_CHANNELS_LISTEN_ADD,
+	SYSTEM_CHANNELS_LISTEN_REMOVE,
 
-    LAST_ELEMENT
+	LAST_ELEMENT
 };
 
 // THESE MUST BE IN THE SAME ORDER AS MESSAGE_TYPE
-constexpr const char* types[] = {
+constexpr const char *types[] = {
     // Administration
     "ADMIN-CHANNELS-CREATE",
     "ADMIN-CHANNELS-DELETE",
@@ -74,11 +79,11 @@ constexpr const char* types[] = {
     "SYSTEM-CHANNELS-LISTEN-REMOVE",
 };
 
-QHash<const char*, MessageType> init_hash();
-QHash<const char*, MessageType> &get_map();
+QHash<const char *, MessageType>  init_hash();
+QHash<const char *, MessageType> &get_map();
 
 std::optional<MessageType> toMessageType(QString type);
-QString toString(MessageType type);
+QString			   toString(MessageType type);
 
 } // namespace MessageType
 

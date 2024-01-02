@@ -1,1 +1,3 @@
-# TODO: add CMakeLists file
+cmake_minimum_required(VERSION 3.25)
+
+add_executable(GigaQt)

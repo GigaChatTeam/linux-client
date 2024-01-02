@@ -1,7 +1,3 @@
 #include "undefinedpage.h"
 
-UndefinedPage::UndefinedPage(QWidget *parent)
-    : QWidget{parent}
-{
-    
-}
+UndefinedPage::UndefinedPage(QWidget *parent) : QWidget{parent} {}

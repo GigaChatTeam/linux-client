@@ -1,28 +1,28 @@
 #pragma once
 
-#include <QObject>
 #include <QAbstractButton>
+#include <QObject>
 
-//painting
-#include <QPainterPath>
+// painting
+#include <QBrush>
+#include <QColor>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRegion>
-#include <QColor>
-#include <QBrush>
 
 class RecentEvent : public QAbstractButton
 {
-    Q_OBJECT
+	Q_OBJECT
 
 private:
-    QPixmap ICON;
+	QPixmap ICON;
 
 public:
-    explicit RecentEvent(const QString& icon_path,
-                         const QString& tooltip,
-                         QWidget* parent = nullptr);
+	explicit RecentEvent(const QString &icon_path,
+			     const QString &tooltip,
+			     QWidget	   *parent = nullptr);
 
 protected:
-    void paintEvent(QPaintEvent* e) override;
+	void paintEvent(QPaintEvent *e) override;
 };

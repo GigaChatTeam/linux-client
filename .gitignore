@@ -12,5 +12,8 @@ gimp/*
 *.xcf
 *.xfc
 *target/
+compile_commands.json
+*cache/
+*.gen.*
 
 LOCAL*

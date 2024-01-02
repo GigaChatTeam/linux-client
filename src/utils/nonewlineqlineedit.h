@@ -1,32 +1,31 @@
 #pragma once
 
-#include <QLineEdit>
 #include <QKeyEvent>
+#include <QLineEdit>
 #include <QObject>
 
 #include <QPainter>
 
 class NoNewLineQLineEdit : public QLineEdit
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    NoNewLineQLineEdit(QWidget* parent);
-    NoNewLineQLineEdit(const QString &str, QWidget* parent);
-    NoNewLineQLineEdit(const QString &str, bool pw, QWidget* parent);
-    ~NoNewLineQLineEdit();
+	NoNewLineQLineEdit(QWidget *parent);
+	NoNewLineQLineEdit(const QString &str, QWidget *parent);
+	NoNewLineQLineEdit(const QString &str, bool pw, QWidget *parent);
+	~NoNewLineQLineEdit();
 
-    bool hidden;
-    bool isDefault = true;
-    QString defaultText;
+	bool	hidden;
+	bool	isDefault = true;
+	QString defaultText;
 
-    const QString defaultStyleSheet = QString("color: #888888"),
-                  changedStyleSheet = QString("color: #000000");
+	const QString defaultStyleSheet = QString("color: #888888"),
+		      changedStyleSheet = QString("color: #000000");
 
 protected:
-    void keyPressEvent(QKeyEvent *e) override;
+	void keyPressEvent(QKeyEvent *e) override;
 signals:
-    void enterPressed();
+	void enterPressed();
 public slots:
-    void setPasswordHide(int ckechboxState);
+	void setPasswordHide(int ckechboxState);
 };
-

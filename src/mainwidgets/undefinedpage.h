@@ -5,11 +5,9 @@
 
 class UndefinedPage : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit UndefinedPage(QWidget *parent);
-    
-signals:
-    
-};
+	explicit UndefinedPage(QWidget *parent);
 
+signals:
+};

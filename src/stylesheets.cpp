@@ -51,6 +51,4 @@ namespace StyleSheets
     "border: 3px solid gray;"
     "font: bold;";
 
-}
-
-
+} // namespace StyleSheets
