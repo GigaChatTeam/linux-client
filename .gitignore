@@ -1,3 +1,4 @@
+# all of the trash that i stored in dev directory
 .build*/
 build*/
 *build*/
@@ -12,8 +13,13 @@ gimp/*
 *.xcf
 *.xfc
 *target/
-compile_commands.json
 *cache/
 *.gen.*
-
 LOCAL*
+
+# cmake
+Makefile
+compile_commands.json
+*.cmake
+CMakeFiles/
+CMakeCache.txt
