@@ -5,6 +5,7 @@ project(gigachat-qt
 	DESCRIPTION "lightweight linux client for GigaChat ecosystem written with Qt6 framework, using gigachat-sqlite-rs library"
 	LANGUAGES CXX)
 
-add_executable(gigachat-qt)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets SvgWidgets Network WebSockets)
+qt6_standard_project_setup()
 
-
+add_subdirectory(src)

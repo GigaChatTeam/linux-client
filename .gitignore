@@ -19,7 +19,11 @@ LOCAL*
 
 # cmake
 Makefile
+QMakefile
+qmake*
+.qmake*
 compile_commands.json
 *.cmake
 CMakeFiles/
 CMakeCache.txt
+*autogen*/
