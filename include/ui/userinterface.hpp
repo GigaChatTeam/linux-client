@@ -1,9 +1,9 @@
 #pragma once
 
 // custom widgets
-#include "mainwidgets/gridscrollingwidget.h"
-#include "mainwidgets/messanger.h"
-#include "mainwidgets/undefinedpage.h"
+#include "ui/mainwidgets/gridscrollingwidget.hpp"
+#include "ui/mainwidgets/messanger.hpp"
+#include "ui/mainwidgets/undefinedpage.hpp"
 
 #include <QObject>
 

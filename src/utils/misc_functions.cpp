@@ -1,4 +1,4 @@
-#include "utils/misc_functions.h"
+#include "utils/misc_functions.hpp"
 
 QString getDateF()
 {

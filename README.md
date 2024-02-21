@@ -1,23 +1,20 @@
 # Linux client for GigaChat project
-Written on C++ using Qt framework
+Written in C++ using Qt6Widgets and GigaChat sqlite api
 
 ### Build prerequisites:
 - Of course, linux (maybe I'll be adding windows compatability. Currently incompatible code: get_date in file `scr/utils/misc_functions.cpp`. When Makefile is added, the dynamic linking flags will be incompatible with windows for the time being (if anyone would like to fix it, I'll accept right away))
-- Qt 6 or higher
-- g++ compiler
+- Qt 6
+- g++/clang++ compiler
+- cmake OR qmake - both work for now. however, CMake is recommended option
 - GNU make 
-- ~~GHC Haskell compiler (not necessary yet)~~
-- ~~ghc-static (not necessary yet)~~
-- patience
-- GNU Make if you care for your sanity
 
 ### Build steps: 
-NOTE: I am planning on adding a Makefile for this, so the most obvoius thing to do would be:
-1. `make`
+1. clone the repo with submodules (`git clone --recursive https://github.com/GigaChatTeam/linux-client && cd liunux-client`)
+2. go to the build directory (`mkdir build && cd build`)
+3. run cmake (`cmake ..`) or qmake (`qmake ..`)
+4. run make (`make` if you used cmake, `make -f QMakefile` if you used qmake)
+5. the executable should be in build the folder after this
 
-However, if you want to compile it manually, here are the steps:
-1. clone the repository & navigate to GigaChat/client/desktop/linux-x11/source
-2. ~~`haskell/build-shared.sh` or `cd haskell && ghc -dynamic -shared -fPIE <did not finish the command lol>`  (not necessary yet)~~
-3. run `qmake GigaQt.pro && make`
-4. Pray. for it to work.
+### Contributing
+For now basically any changes are accepted
 

@@ -6,8 +6,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "stylesheets.h"
-#include "utils/message.h"
+#include "ui/stylesheets.hpp"
+#include "utils/message.hpp"
 
 namespace GC
 {

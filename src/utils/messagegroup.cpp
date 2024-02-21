@@ -1,4 +1,4 @@
-#include "messagegroup.h"
+#include "utils/messagegroup.hpp"
 
 GC::MessageGroup::MessageGroup(QWidget *parent,
 			       qint64	msgAuthor,

@@ -1,4 +1,4 @@
-#include "nonewlineqlineedit.h"
+#include "utils/nonewlineqlineedit.hpp"
 
 NoNewLineQLineEdit::NoNewLineQLineEdit(QWidget *parent) : QLineEdit{parent} {}
 NoNewLineQLineEdit::NoNewLineQLineEdit(const QString &str, QWidget *parent)

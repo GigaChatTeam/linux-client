@@ -1,4 +1,4 @@
-#include "userinterface.h"
+#include "ui/userinterface.hpp"
 
 void UserInterface::constructWindowArray()
 {

@@ -1,4 +1,4 @@
-#include "authorizer.h"
+#include "ui/authorizer.hpp"
 
 void Authorizer::InputField::setupUI()
 {

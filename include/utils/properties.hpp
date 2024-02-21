@@ -9,7 +9,7 @@
 typedef struct {
 	QByteArray	    token;
 	qint64		    userID;
-	std::vector<qint64> activeChannels, passiveChannels;
+	std::vector<qint64> activeChannels, *passiveChannels;
 	QString		    username;
 } USER_PROPERTIES_T;
 

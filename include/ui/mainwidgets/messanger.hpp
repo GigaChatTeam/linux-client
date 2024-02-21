@@ -1,13 +1,13 @@
 #pragma once
 
-#include "utils/properties.h"
+#include "utils/properties.hpp"
 #include <QObject>
 
-#include "utils/concepts_templates.h"
-#include "utils/message.h"
-#include "utils/messagegroup.h"
-#include "utils/misc_functions.h"
-#include "utils/nonewlineqlineedit.h"
+#include "utils/concepts_templates.hpp"
+#include "utils/message.hpp"
+#include "utils/messagegroup.hpp"
+#include "utils/misc_functions.hpp"
+#include "utils/nonewlineqlineedit.hpp"
 #include <QAbstractScrollArea>
 #include <QLabel>
 #include <QPushButton>

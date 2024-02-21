@@ -3,11 +3,11 @@
 
 #include <fstream>
 
-#include "authorizer.h"
-#include "userinterface.h"
-#include "utils/misc_functions.h"
-#include "utils/properties.h"
-#include "utils/recentevent.h"
+#include "ui/authorizer.hpp"
+#include "ui/userinterface.hpp"
+#include "utils/misc_functions.hpp"
+#include "utils/properties.hpp"
+#include "utils/recentevent.hpp"
 
 #include <QObject>
 

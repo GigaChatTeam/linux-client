@@ -20,7 +20,7 @@
 #include <QString>
 #include <QStringView>
 
-#include "utils/nonewlineqlineedit.h"
+#include "utils/nonewlineqlineedit.hpp"
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -40,9 +40,9 @@
 #include <QNetworkRequest>
 #include <QUrl>
 
-#include "stylesheets.h"
-#include "utils/concepts_templates.h"
-#include "utils/properties.h"
+#include "stylesheets.hpp"
+#include "utils/concepts_templates.hpp"
+#include "utils/properties.hpp"
 #include <functional>
 
 class Authorizer : public QSvgWidget

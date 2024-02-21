@@ -1,4 +1,4 @@
-#include "messanger.h"
+#include "ui/mainwidgets/messanger.hpp"
 
 void ScrollingWidget::setupUI()
 {

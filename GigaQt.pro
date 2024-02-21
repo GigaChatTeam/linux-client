@@ -17,7 +17,7 @@ BIN_DIR = $$INSTALL_ROOT/bin
 release: SHARE_DIR = $$INSTALL_ROOT/share/$${TARGET}
 debug: SHARE_DIR = "/home/main/coding/linux-client/build/Debug/share/$${TARGET}"
 
-INCLUDEPATH += ../database/include
+INCLUDEPATH += include
 
 DEFINES += \
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000 \
@@ -27,38 +27,38 @@ DEFINES += \
 	SHARE_DIRECTORY="\\\"$${SHARE_DIR}\\\""
 
 SOURCES += \
-	authorizer.cpp \
-	main.cpp \
-	mainwidgets/gridscrollingwidget.cpp \
-	utils/messagegroup.cpp \
-	mainwidgets/messanger.cpp \
-	mainwidgets/undefinedpage.cpp \
-	stylesheets.cpp \
-	userinterface.cpp \
-	utils/message.cpp \
-	utils/misc_functions.cpp \
-	utils/nonewlineqlineedit.cpp \
-	utils/properties.cpp \
-	utils/recentevent.cpp \
-	database/wrappers.cpp \
-	widget.cpp
+	src/ui/authorizer.cpp \
+	src/main.cpp \
+	src/ui/mainwidgets/gridscrollingwidget.cpp \
+	src/utils/messagegroup.cpp \
+	src/ui/mainwidgets/messanger.cpp \
+	src/ui/mainwidgets/undefinedpage.cpp \
+	src/ui/stylesheets.cpp \
+	src/ui/userinterface.cpp \
+	src/utils/message.cpp \
+	src/utils/misc_functions.cpp \
+	src/utils/nonewlineqlineedit.cpp \
+	src/utils/properties.cpp \
+	src/utils/recentevent.cpp \
+	src/database/wrappers.cpp \
+	src/ui/widget.cpp
 
 HEADERS += \
-	authorizer.h \
-	mainwidgets/gridscrollingwidget.h \
-	utils/messagegroup.h \
-	mainwidgets/messanger.h \
-	mainwidgets/undefinedpage.h \
-	stylesheets.h \
-	userinterface.h \
-	utils/concepts_templates.h \
-	utils/message.h \
-	utils/misc_functions.h \
-	utils/nonewlineqlineedit.h \
-	utils/properties.h \
-	utils/recentevent.h \
-	database/wrappers.h \
-	widget.h
+	include/ui/authorizer.hpp \
+	include/ui/mainwidgets/gridscrollingwidget.hpp \
+	include/utils/messagegroup.hpp \
+	include/ui/mainwidgets/messanger.hpp \
+	include/ui/mainwidgets/undefinedpage.hpp \
+	include/ui/stylesheets.hpp \
+	include/ui/userinterface.hpp \
+	include/utils/concepts_templates.hpp \
+	include/utils/message.hpp \
+	include/utils/misc_functions.hpp \
+	include/utils/nonewlineqlineedit.hpp \
+	include/utils/properties.hpp \
+	include/utils/recentevent.hpp \
+	include/database/wrappers.hpp \
+	include/ui/widget.hpp
 
 target.path = $$BIN_DIR
 

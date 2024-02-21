@@ -1,6 +1,6 @@
-#include "utils/misc_functions.h"
-#include "utils/properties.h"
-#include "widget.h"
+#include "utils/misc_functions.hpp"
+#include "utils/properties.hpp"
+#include "ui/widget.hpp"
 
 // TODO: use these bad guys
 #include <QApplication>
@@ -9,6 +9,10 @@
 #include <QDir>
 #include <QTranslator>
 #include <cstring>
+
+#ifndef SHARE_DIRECTORY
+#define SHARE_DIRECTORY "~/.local/share/gigachat"
+#endif
 
 int main(int argc, char *argv[])
 {

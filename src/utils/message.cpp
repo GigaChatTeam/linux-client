@@ -1,4 +1,4 @@
-#include "message.h"
+#include "utils/message.hpp"
 
 namespace GC
 {

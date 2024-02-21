@@ -1,4 +1,4 @@
-#include "recentevent.h"
+#include "utils/recentevent.hpp"
 
 RecentEvent::RecentEvent(const QString &icon_path,
 			 const QString &tooltip,

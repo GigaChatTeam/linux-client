@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "stylesheets.h"
+#include "ui/stylesheets.hpp"
 
 namespace GC
 {
