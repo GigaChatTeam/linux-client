@@ -24,7 +24,7 @@ set(CPP_FILES
 	src/ui/stylesheets.cpp
 	src/utils/properties.cpp
 	src/utils/misc_functions.cpp
-
+	src/utils/settings_parser.cpp
 )
 set(HPP_FILES
 	# Widgets
@@ -42,9 +42,12 @@ set(HPP_FILES
 	include/ui/stylesheets.hpp
 	include/utils/properties.hpp
 	include/utils/misc_functions.hpp
+	include/utils/settings_parser.hpp
 )
 set(ASSET_FILES assets/assets.qrc)
 set(TRANSLATION_FILES "")
+
+find_package(libconfig++ REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets SvgWidgets Network WebSockets)
 qt6_standard_project_setup()
@@ -59,9 +62,6 @@ set_target_properties(gigachat-qt PROPERTIES
 )
 
 target_compile_options(gigachat-qt PRIVATE
-	-Wall
-	-Wextra
-	-Werror
 	-Wno-multichar
 )
 
@@ -71,6 +71,7 @@ target_link_libraries(gigachat-qt PRIVATE
 	Qt6::SvgWidgets
 	Qt6::Network
 	Qt6::WebSockets
+	config++
 )
 
 target_include_directories(gigachat-qt PRIVATE
@@ -78,6 +79,14 @@ target_include_directories(gigachat-qt PRIVATE
 )
 
 target_compile_definitions(gigachat-qt PRIVATE
-	SHARE_DIRECTORY="~/.local/share/gigachat"
+	QT_DISABLE_DEPRECATED_BEFORE=0x060000
+	SHARE_DIRECTORY="/home/main/coding/linux-client/.local/share"
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_options(gigachat-qt PRIVATE -Wall -Wextra -Werror)
+	target_compile_definitions(gigachat-qt PRIVATE QT_DEBUG GIGAQT_AUTH_PARSE_TEST)
+endif()
+
+
 

@@ -19,34 +19,17 @@
    ----------------------------------------------------------------------------
 */
 
-#pragma once
+#include <QtEnvironmentVariables>
+#include <QStringList>
+#include <QSet>
+#include <algorithm>
+#include <libconfig.h++>
+#include <string>
 
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QObject>
+inline libconfig::Config config;
 
-#include <QPainter>
-
-class NoNewLineQLineEdit : public QLineEdit
-{
-	Q_OBJECT
-public:
-	NoNewLineQLineEdit(QWidget *parent);
-	NoNewLineQLineEdit(const QString &str, QWidget *parent);
-	NoNewLineQLineEdit(const QString &str, bool pw, QWidget *parent);
-	~NoNewLineQLineEdit();
-
-	bool	hidden;
-	bool	isDefault = true;
-	QString defaultText;
-
-	const QString defaultStyleSheet = QString("color: #888888"),
-		      changedStyleSheet = QString("color: #000000");
-
-protected:
-	void keyPressEvent(QKeyEvent *e) override;
-signals:
-	void enterPressed();
-public slots:
-	void setPasswordHide(int ckechboxState);
-};
+bool alphanumeric(char);
+QString parse_env_string(const std::string& str);
+void init_config(const char *path);
+bool init_paths();
+bool init_servers();

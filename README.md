@@ -4,6 +4,7 @@ Written in C++ using Qt6Widgets and GigaChat sqlite api
 ### Build prerequisites:
 - Of course, linux (maybe I'll be adding windows compatability. Currently incompatible code: get_date in file `scr/utils/misc_functions.cpp`. When Makefile is added, the dynamic linking flags will be incompatible with windows for the time being (if anyone would like to fix it, I'll accept right away))
 - Qt 6
+- libconfig
 - g++/clang++ compiler
 - cmake OR qmake - both work for now. however, CMake is recommended option
 - GNU make 
