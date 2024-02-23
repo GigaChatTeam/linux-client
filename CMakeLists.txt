@@ -47,8 +47,12 @@ set(HPP_FILES
 set(ASSET_FILES assets/assets.qrc)
 set(TRANSLATION_FILES "")
 
+add_subdirectory(corrosion)
+corrosion_import_crate(MANIFEST_PATH database/Cargo.toml 
+	FEATURES multithread
+	CRATE_TYPES cdylib
+)
 find_package(libconfig++ REQUIRED)
-
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets SvgWidgets Network WebSockets)
 qt6_standard_project_setup()
 
@@ -71,16 +75,20 @@ target_link_libraries(gigachat-qt PRIVATE
 	Qt6::SvgWidgets
 	Qt6::Network
 	Qt6::WebSockets
+
 	config++
 )
+target_link_libraries(gigachat-qt PUBLIC gigachat_sqlite)
 
 target_include_directories(gigachat-qt PRIVATE
 	include
+	database/include
 )
 
 target_compile_definitions(gigachat-qt PRIVATE
 	QT_DISABLE_DEPRECATED_BEFORE=0x060000
 	SHARE_DIRECTORY="/home/main/coding/linux-client/.local/share"
+	MULTITHREAD
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

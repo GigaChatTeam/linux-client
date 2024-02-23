@@ -31,6 +31,8 @@
 #include <QTranslator>
 #include <cstring>
 
+/* #include <gigachat_orm.h> */
+
 #ifndef SHARE_DIRECTORY
 #define SHARE_DIRECTORY "~/.local/share/gigachat"
 #endif
