@@ -1,6 +1,0 @@
-[submodule "database"]
-	path = database
-	url = https://github.com/GigaChatTeam/message-db-interface
-[submodule "corrosion"]
-	path = corrosion
-	url = https://github.com/corrosion-rs/corrosion.git
